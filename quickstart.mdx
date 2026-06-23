@@ -1,24 +1,30 @@
 ---
 title: "Quickstart"
-description: "Primeiros passos para chamar a API Veepag no sandbox."
+description: "Um primeiro teste guiado para validar suas credenciais no sandbox da Veepag."
 ---
 
-Este guia mostra uma chamada minima para validar suas credenciais e consultar transacoes no sandbox.
+Vamos fazer sua primeira chamada na API Veepag juntos. A ideia aqui é simples: validar que suas credenciais estão funcionando e que sua aplicação já consegue conversar com o sandbox.
 
-## Pre-requisitos
+Se esta for sua primeira integração com a Veepag, comece por este guia antes de ir para os fluxos mais completos de transações, assinaturas e cobranças.
 
-- Uma `apiKey` no formato `keyId.secret` ou um `token` valido.
+## Pré-requisitos
+
+- Uma `apiKey` no formato `keyId.secret` ou um `token` válido.
 - Acesso a pelo menos uma empresa na Veepag.
-- Permissao `transaction.read` para listar transacoes.
+- Permissão `transaction.read` para listar transações.
 
 ## 1. Configure a base URL
+
+Comece apontando sua integração para o ambiente de sandbox. Assim você pode testar com tranquilidade, sem afetar dados de produção.
 
 ```bash
 export VEEPAG_BASE_URL="https://sandbox.api.veepag.com"
 export VEEPAG_API_KEY="keyId.secret"
 ```
 
-## 2. Liste transacoes
+## 2. Liste transações
+
+Agora faça uma consulta simples em transações. Mesmo que ainda não exista nenhuma transação no ambiente, uma resposta válida já confirma que a autenticação e a comunicação estão funcionando.
 
 ```bash
 curl --request GET "$VEEPAG_BASE_URL/v1/transaction?page=1&limit=20" \
@@ -39,9 +45,13 @@ Resposta paginada:
 }
 ```
 
+<Check>
+  Se você recebeu uma resposta nesse formato, sua primeira chamada deu certo. A partir daqui, você já pode testar filtros, criar clientes ou iniciar um fluxo de pagamento.
+</Check>
+
 ## 3. Use filtros
 
-Para buscar por periodo, prefira `rangeTime.start`, `rangeTime.end` e `sort.property`.
+Quando quiser consultar um período específico, prefira `rangeTime.start`, `rangeTime.end` e `sort.property`. Esses filtros deixam a busca mais previsível e ajudam a evitar consultas grandes demais.
 
 ```bash
 curl --request GET "$VEEPAG_BASE_URL/v1/transaction?rangeTime.start=2026-06-01T00:00:00.000Z&rangeTime.end=2026-06-23T23:59:59.999Z&sort.property=createdAt&sort.order=desc&page=1&limit=20" \
@@ -50,8 +60,10 @@ curl --request GET "$VEEPAG_BASE_URL/v1/transaction?rangeTime.start=2026-06-01T0
 
 ## 4. Consulte a referencia
 
-Depois de validar a autenticacao, use a API Reference para ver os endpoints disponiveis, schemas de request e exemplos.
+Depois de validar a autenticação, use a API Reference para ver os endpoints disponíveis, schemas de request, respostas e exemplos.
+
+Se algo não sair como esperado, confira a página de erros antes de seguir. Muitas falhas comuns estão relacionadas a credencial, permissão de empresa ou payload inválido.
 
 <Note>
-  Endpoints de listagem v1 usam `page` com default `1` e `limit` com default `20`. O limite maximo confirmado e `100`.
+  Endpoints de listagem v1 usam `page` com default `1` e `limit` com default `20`. O limite máximo confirmado é `100`.
 </Note>
