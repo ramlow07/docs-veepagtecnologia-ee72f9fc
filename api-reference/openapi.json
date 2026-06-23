@@ -843,7 +843,7 @@
         "tags": [
           "Transaction"
         ],
-        "description": "Captura uma transacao previamente autorizada. Use transactionId ou tid para identificar a transacao."
+        "description": "Captura uma transacao previamente autorizada usando transactionId ou tid. O fluxo atual captura o valor salvo na transacao (transaction.amount.value); o campo amount do request nao e usado."
       }
     },
     "/v1/transaction/cancel": {
@@ -863,7 +863,7 @@
         },
         "responses": {
           "201": {
-            "description": "Transacao cancelada ou ja cancelada.",
+            "description": "Transacao cancelada. Em sucesso normal o use case nao retorna corpo; se a transacao ja estiver cancelada, retorna { success: true, message }.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1394,7 +1394,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Transacao completa. Schema exato nao confirmado.",
+            "description": "Transacao enriquecida com relacoes parciais confirmadas na agregacao.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1492,7 +1492,7 @@
         "tags": [
           "Transaction"
         ],
-        "description": "Busca uma transacao enriquecida com relacoes. Informe id ou tid.",
+        "description": "Busca uma transacao enriquecida. O retorno inclui campos projetados da transacao e relacoes parciais com product, client, subscription e binData/issuerName quando disponiveis.",
         "security": [
           {
             "api_key": []
@@ -3042,7 +3042,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Assinatura completa. Schema exato nao confirmado.",
+            "description": "Assinatura enriquecida com relacoes agregadas.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3140,7 +3140,7 @@
         "tags": [
           "Subscription"
         ],
-        "description": "Busca uma assinatura completa pelo id.",
+        "description": "Busca uma assinatura enriquecida. O retorno agrega product, transactions, charges, client e affiliate quando disponiveis.",
         "security": [
           {
             "api_key": []
@@ -4290,19 +4290,7 @@
         },
         "responses": {
           "200": {
-            "description": "Cobranca cancelada. Body de sucesso nao confirmado.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": [
-                    "object",
-                    "null"
-                  ],
-                  "additionalProperties": true
-                },
-                "example": {}
-              }
-            }
+            "description": "Cobranca cancelada com sucesso. Em sucesso, o endpoint nao retorna corpo de resposta."
           },
           "201": {
             "description": "Charge successfully canceled"
@@ -4776,7 +4764,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Cobranca completa. Schema exato nao confirmado.",
+            "description": "Cobranca enriquecida com relacoes agregadas.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4883,7 +4871,7 @@
         "tags": [
           "Charge"
         ],
-        "description": "Busca uma cobranca completa pelo id."
+        "description": "Busca uma cobranca enriquecida. O retorno agrega product, transactions e client quando disponiveis."
       }
     },
     "/v1/alert/update/resolved": {
@@ -5797,7 +5785,9 @@
             ]
           },
           "amount": {
-            "type": "number"
+            "type": "number",
+            "description": "Valor da transacao em centavos. Exemplo: 9900 representa R$ 99,00.",
+            "example": 9900
           },
           "installments": {
             "type": "number",
@@ -5827,7 +5817,9 @@
             "type": "string"
           },
           "amount": {
-            "type": "number"
+            "type": "number",
+            "description": "Campo aceito pelo DTO, mas nao usado no fluxo atual. A captura usa transaction.amount.value salvo na transacao.",
+            "deprecated": true
           }
         },
         "required": [
