@@ -1,0 +1,70 @@
+---
+title: "Cobrancas"
+description: "Como criar, pagar, cancelar e marcar cobrancas como pagas."
+---
+
+Cobrancas conectam cliente, produto, vencimento, valor e opcoes de pagamento.
+
+## Criar cobranca
+
+`POST /v1/charge` cria uma cobranca para um cliente e produto.
+
+```bash
+curl --request POST 'https://sandbox.api.veepag.com/v1/charge' \
+  --header 'apiKey: keyId.secret' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "companyId": "company_id",
+    "clientId": "client_id",
+    "productId": "product_id",
+    "dueDate": "2026-07-23",
+    "amount": 99.9,
+    "description": "Mensalidade julho"
+  }'
+```
+
+<Note>
+  Em `POST /v1/charge`, o valor de `amount` e convertido para centavos internamente com `Math.round(amount * 100)`.
+</Note>
+
+## Pagar cobranca
+
+`POST /v1/charge/pay` processa o pagamento da cobranca, mas usa reCAPTCHA em vez de `apiKey` ou `token`.
+
+Campos obrigatorios confirmados:
+
+| Campo | Descricao |
+| --- | --- |
+| `_id` | ID da cobranca. |
+| `companyId` | ID da empresa. |
+| `referenceId` | Referencia da cobranca. |
+| `paymentMethod` | Metodo de pagamento. |
+| `installments` | Obrigatorio no DTO, default `1`. |
+
+## Cancelar cobranca
+
+`PUT /v1/charge/cancel` cancela a cobranca e altera o status para `CANCELED_MANUAL`.
+
+```json
+{
+  "companyId": "company_id",
+  "chargeId": "charge_id"
+}
+```
+
+## Marcar como paga
+
+`PUT /v1/charge/paid` marca uma cobranca como paga.
+
+```json
+{
+  "companyId": "company_id",
+  "_id": "charge_id"
+}
+```
+
+Esse endpoint e idempotente quando a cobranca ja esta `PAID`: a API retorna a propria cobranca.
+
+## Exportar cobrancas
+
+`GET /v1/charge/exports` exporta ate 10.000 itens. Reduza o periodo ou os filtros se esse limite for excedido.

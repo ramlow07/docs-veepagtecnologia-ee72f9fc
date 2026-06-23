@@ -1,0 +1,55 @@
+---
+title: "Erros"
+description: "Formato padrao de erro, codigos HTTP e causas comuns na API Veepag."
+---
+
+A API retorna erros em um formato padrao para falhas de autenticacao, autorizacao, validacao e regras de negocio.
+
+## Formato padrao
+
+```json
+{
+  "error_messages": [
+    {
+      "msg": "Unauthorized.",
+      "type": "field",
+      "path": "companyId",
+      "location": "body"
+    }
+  ],
+  "code": "unauthorized",
+  "path": "/v1/transaction",
+  "metadata": {}
+}
+```
+
+## Codigos HTTP
+
+| Status | Code comum | Causa |
+| --- | --- | --- |
+| `400` | `ZodValidationException` ou codigo de dominio | Payload, query string ou regra de negocio invalida. |
+| `401` | `unauthorized` | `apiKey` ou `token` ausente ou invalido. |
+| `403` | `forbidden` | Credencial sem acesso a empresa ou permissao solicitada. |
+| `404` | `company_not_found`, `transaction_not_found` | Recurso nao encontrado. |
+| `500` | `unknown_server_error` | Erro nao mapeado no servidor. |
+
+## Erros de negocio comuns
+
+| Code | Quando pode ocorrer |
+| --- | --- |
+| `company_disabled` | Empresa ou seller inativo. |
+| `payment_method_already_exists` | Cartao ja vinculado a outro cliente. |
+| `attempt_limit_exceeded` | Limite de cartoes por cliente excedido em producao. |
+| `integration_access_not_found` | Integracao de pagamento ausente para a empresa. |
+| `transaction_not_found` | Transacao nao encontrada para captura, cancelamento ou consulta. |
+| `product_not_found` | Produto inexistente ou inacessivel. |
+| `client_not_found` | Cliente inexistente ou inacessivel. |
+| `charge_not_found` | Cobranca inexistente ou inacessivel. |
+
+## Validacao
+
+Falhas de validacao usam Zod na codebase. O campo `error_messages` pode incluir mensagens por campo, path e localizacao (`body`, `query` ou outro contexto de validacao).
+
+<Tip>
+  Trate `code` como identificador programatico quando ele estiver presente. A mensagem pode variar conforme a validacao ou o provedor de pagamento.
+</Tip>

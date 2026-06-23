@@ -1,0 +1,45 @@
+---
+title: "Webhooks"
+description: "Eventos enviados pela Veepag para a URL configurada na empresa."
+---
+
+A Veepag pode enviar eventos outbound para a URL configurada em `company.setting.webhook`.
+
+| Configuracao | Descricao |
+| --- | --- |
+| `active` | Indica se o webhook esta ativo. |
+| `url` | URL que recebe os eventos por HTTP POST. |
+
+## Eventos confirmados
+
+| Evento | Payload |
+| --- | --- |
+| `transaction.created` | `{ "type": "transaction.created", "transaction": { ... } }` |
+| `transaction.update` | `{ "type": "transaction.update", "transaction": { ... } }` |
+| `subscription.created` | `{ "type": "subscription.created", "subscription": { ... } }` |
+| `subscription.update` | `{ "type": "subscription.update", "subscription": { ... } }` |
+| `charge.created` | `{ "type": "charge.created", "charge": { ... } }` |
+| `charge.update` | `{ "type": "charge.update", "charge": { ... } }` |
+
+O payload de transacao pode incluir dados relacionados como `subscription`, `product`, `client` e `charge`, quando disponiveis.
+
+## Exemplo de payload
+
+```json
+{
+  "type": "transaction.created",
+  "transaction": {
+    "_id": "transaction_id",
+    "companyId": "company_id",
+    "status": "PAID",
+    "amount": 9900,
+    "paymentMethod": "CREDIT_CARD",
+    "createdAt": "2026-06-23T12:00:00.000Z",
+    "lastUpdate": "2026-06-23T12:00:03.000Z"
+  }
+}
+```
+
+<Warning>
+  Assinatura HMAC, verificacao de webhook e politica de retry nao foram confirmadas na codebase analisada. O envio confirmado e um POST JSON; erros de entrega sao logados.
+</Warning>

@@ -1,0 +1,79 @@
+---
+title: "Transacoes"
+description: "Como criar, consultar, capturar, cancelar e exportar transacoes."
+---
+
+Use transacoes para pagamentos avulsos com cartao, consultas operacionais, captura de autorizacoes e cancelamentos.
+
+## Criar uma transacao
+
+`POST /v1/transaction` cria uma transacao avulsa. Para cartao, envie `paymentProfile` com numero, validade e nome do portador.
+
+```bash
+curl --request POST 'https://sandbox.api.veepag.com/v1/transaction' \
+  --header 'apiKey: keyId.secret' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "companyId": "company_id",
+    "amount": 9900,
+    "installments": 1,
+    "capture": true,
+    "paymentProfile": {
+      "cardNumber": "4111111111111111",
+      "cardExpiration": "10/2026",
+      "holderName": "CLIENTE TESTE",
+      "cardCvv": "123"
+    },
+    "client": {
+      "name": "Cliente Teste",
+      "doc": "12345678909",
+      "email": "cliente@example.com"
+    }
+  }'
+```
+
+<Note>
+  O audit confirmou validacoes de cartao e cliente, mas deixou a unidade monetaria de `amount` em transacoes como lacuna. Confirme se sua credencial espera centavos ou reais antes de usar em producao.
+</Note>
+
+## Consultar transacoes
+
+`GET /v1/transaction` retorna um objeto paginado. Use `rangeTime` com `sort.property` para filtros temporais.
+
+```bash
+curl --request GET 'https://sandbox.api.veepag.com/v1/transaction?page=1&limit=20&sort.property=createdAt&sort.order=desc' \
+  --header 'apiKey: keyId.secret'
+```
+
+`GET /v2/transaction` retorna um array direto, sem paginacao. Ele exige `companyId` e um filtro por periodo de ate 7 dias ou um identificador (`id` ou `tid`).
+
+## Capturar uma autorizacao
+
+`POST /v1/transaction/capture` captura uma transacao previamente autorizada.
+
+```json
+{
+  "companyId": "company_id",
+  "transactionId": "transaction_id"
+}
+```
+
+Tambem e aceito `tid`. Pelo menos um identificador e necessario em runtime.
+
+## Cancelar uma transacao
+
+`PUT /v1/transaction/cancel` cancela ou estorna uma transacao.
+
+```json
+{
+  "companyId": "company_id",
+  "transactionId": "transaction_id",
+  "cancelSubscription": false
+}
+```
+
+Se `cancelSubscription` for `true`, a assinatura vinculada tambem pode ser cancelada.
+
+## Exportar transacoes
+
+`GET /v1/transaction/exports` exporta ate 10.000 itens. Se o filtro exceder esse limite, reduza o periodo ou os filtros.

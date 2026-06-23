@@ -1,0 +1,54 @@
+---
+title: "Autenticacao"
+description: "Como autenticar chamadas na API Veepag usando apiKey ou token."
+---
+
+A maior parte dos endpoints publicos exige autenticacao por header. Envie um dos headers abaixo em cada requisicao.
+
+| Header | Obrigatorio | Formato | Uso |
+| --- | --- | --- | --- |
+| `apiKey` | Sim, se `token` nao for enviado | `keyId.secret` | API key de integracao. |
+| `token` | Sim, se `apiKey` nao for enviado | JWT | Token com validade confirmada de 14 dias. |
+
+<Warning>
+  Envie apenas credenciais do ambiente correspondente. Credenciais de sandbox devem ser usadas com `https://sandbox.api.veepag.com/`; credenciais de producao devem ser usadas com `https://api.veepag.com/`.
+</Warning>
+
+## Exemplo com API key
+
+```bash
+curl --request GET 'https://sandbox.api.veepag.com/v1/transaction?page=1&limit=20' \
+  --header 'apiKey: keyId.secret'
+```
+
+## Exemplo com token
+
+```bash
+curl --request GET 'https://sandbox.api.veepag.com/v1/client?page=1&limit=20' \
+  --header 'token: eyJhbGciOi...'
+```
+
+## Permissoes
+
+As credenciais sao avaliadas junto com permissoes de acesso por recurso.
+
+| Recurso | Leitura | Escrita |
+| --- | --- | --- |
+| Transacoes | `transaction.read` | `transaction.write` |
+| Clientes | `client.read` | `client.write` |
+| Assinaturas | `subscription.read` | `subscription.write` |
+| Produtos | `product.read` | `product.write` |
+| Cobrancas | `charge.read` | `charge.write` |
+| Alertas | `alert.read` | `alert.write` |
+
+## Escopo de empresa
+
+O acesso a `companyId` e `companyIds` e validado contra as empresas disponiveis para a credencial. Quando a credencial nao tem acesso a empresa solicitada, a API retorna `403`.
+
+<Note>
+  O CORS aceita headers como `Authorization`, `X-API-Key` e `X-Token`, mas a leitura desses headers pelo guard de autenticacao nao foi confirmada. Use `apiKey` ou `token`.
+</Note>
+
+## Excecao: pagamento de cobranca
+
+`POST /v1/charge/pay` usa autenticacao por reCAPTCHA (`AuthByCaptchaGuard`) e nao segue o mesmo fluxo de `apiKey` ou `token`.

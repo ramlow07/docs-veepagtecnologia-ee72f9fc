@@ -1,0 +1,88 @@
+---
+title: "Assinaturas"
+description: "Como criar, consultar, atualizar e cancelar assinaturas na API Veepag."
+---
+
+Assinaturas representam recorrencias vinculadas a um cliente e produto.
+
+## Criar assinatura v1
+
+`POST /v1/subscription` cria a assinatura, gera a cobranca e tenta o pagamento imediato.
+
+Campos obrigatorios confirmados:
+
+| Campo | Regra |
+| --- | --- |
+| `companyId` | String obrigatoria. |
+| `product.id` | ID do produto. |
+| `paymentMethod` | Enum `CREDIT_CARD`, `DEBIT_CARD`, `BOLETO` ou `PIX`. |
+| `paymentProfile` | Obrigatorio para `CREDIT_CARD`: `holderName`, `cardNumber`, `cardExpiration`. |
+| `client.name` | Obrigatorio quando `client` e enviado. |
+| `client.doc` ou `client.cpf` | CPF/CNPJ valido. |
+
+```bash
+curl --request POST 'https://sandbox.api.veepag.com/v1/subscription' \
+  --header 'apiKey: keyId.secret' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "companyId": "company_id",
+    "product": { "id": "product_id" },
+    "paymentMethod": "CREDIT_CARD",
+    "installments": 1,
+    "client": {
+      "name": "Cliente Teste",
+      "doc": "12345678909",
+      "email": "cliente@example.com"
+    },
+    "paymentProfile": {
+      "holderName": "CLIENTE TESTE",
+      "cardNumber": "4111111111111111",
+      "cardExpiration": "10/2026",
+      "cardCvv": "123"
+    },
+    "metadata": {
+      "externalOrderId": "pedido_123"
+    }
+  }'
+```
+
+## Criar assinatura v2
+
+`POST /v2/subscription` cria a assinatura e a cobranca, mas nao tenta o pagamento imediato.
+
+Principais diferencas:
+
+| v1 | v2 |
+| --- | --- |
+| Cliente inline em `client` | Cliente existente em `clientId` |
+| Produto em `product.id` | Produto em `productId` |
+| Pagamento imediato | Cria subscription + charge sem pagamento |
+| `dueDate` nao confirmado no DTO | `dueDate` obrigatorio |
+
+## Cancelar assinatura
+
+`PUT /v1/subscription/cancel` cancela uma assinatura.
+
+```json
+{
+  "companyId": "company_id",
+  "subscriptionId": "subscription_id"
+}
+```
+
+Resposta confirmada:
+
+```json
+{
+  "success": true,
+  "message": "Assinatura cancelada com sucesso."
+}
+```
+
+## Criacao em lote
+
+`POST /v1/subscription/list` recebe `companyId` e `list`. O processamento e assincrono por fila, com blocos de 3.000 itens e delay de 15 minutos entre blocos.
+
+<Warning>
+  O schema dos itens de `list` nao esta tipado na codebase (`z.any()`). Confirme o layout esperado antes de usar esse endpoint em producao.
+</Warning>

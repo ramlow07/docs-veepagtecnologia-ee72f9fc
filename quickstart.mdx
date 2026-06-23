@@ -1,0 +1,57 @@
+---
+title: "Quickstart"
+description: "Primeiros passos para chamar a API Veepag no sandbox."
+---
+
+Este guia mostra uma chamada minima para validar suas credenciais e consultar transacoes no sandbox.
+
+## Pre-requisitos
+
+- Uma `apiKey` no formato `keyId.secret` ou um `token` valido.
+- Acesso a pelo menos uma empresa na Veepag.
+- Permissao `transaction.read` para listar transacoes.
+
+## 1. Configure a base URL
+
+```bash
+export VEEPAG_BASE_URL="https://sandbox.api.veepag.com"
+export VEEPAG_API_KEY="keyId.secret"
+```
+
+## 2. Liste transacoes
+
+```bash
+curl --request GET "$VEEPAG_BASE_URL/v1/transaction?page=1&limit=20" \
+  --header "apiKey: $VEEPAG_API_KEY"
+```
+
+Resposta paginada:
+
+```json
+{
+  "items": [],
+  "has_more": false,
+  "limit": 20,
+  "total_pages": 1,
+  "page": 1,
+  "total": 0,
+  "query_count": 0
+}
+```
+
+## 3. Use filtros
+
+Para buscar por periodo, prefira `rangeTime.start`, `rangeTime.end` e `sort.property`.
+
+```bash
+curl --request GET "$VEEPAG_BASE_URL/v1/transaction?rangeTime.start=2026-06-01T00:00:00.000Z&rangeTime.end=2026-06-23T23:59:59.999Z&sort.property=createdAt&sort.order=desc&page=1&limit=20" \
+  --header "apiKey: $VEEPAG_API_KEY"
+```
+
+## 4. Consulte a referencia
+
+Depois de validar a autenticacao, use a API Reference para ver os endpoints disponiveis, schemas de request e exemplos.
+
+<Note>
+  Endpoints de listagem v1 usam `page` com default `1` e `limit` com default `20`. O limite maximo confirmado e `100`.
+</Note>

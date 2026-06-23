@@ -15,6 +15,24 @@
   "navigation": {
     "groups": [
       {
+        "group": "Comece aqui",
+        "pages": [
+          "introduction",
+          "quickstart",
+          "authentication",
+          "errors",
+          "webhooks"
+        ]
+      },
+      {
+        "group": "Guias",
+        "pages": [
+          "guides/transactions",
+          "guides/subscriptions",
+          "guides/charges"
+        ]
+      },
+      {
         "group": "API Reference",
         "openapi": "api-reference/openapi.json"
       }

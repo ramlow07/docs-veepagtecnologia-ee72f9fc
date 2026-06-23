@@ -1,0 +1,47 @@
+---
+title: "Introducao"
+description: "Visao geral da API Veepag, ambientes, autenticacao e principais recursos."
+---
+
+A API Veepag permite criar e consultar transacoes, clientes, assinaturas, produtos, cobrancas e alertas de contestacao.
+
+Use esta documentacao junto com a API Reference para implementar integracoes no ambiente de sandbox e, depois da homologacao, operar em producao.
+
+## Ambientes
+
+| Ambiente | Base URL |
+| --- | --- |
+| Sandbox | `https://sandbox.api.veepag.com/` |
+| Producao | `https://api.veepag.com/` |
+
+## Recursos principais
+
+| Recurso | Quando usar |
+| --- | --- |
+| Transacoes | Criar pagamentos avulsos, capturar autorizacoes, cancelar/estornar e exportar transacoes. |
+| Clientes | Cadastrar, atualizar e consultar dados de clientes. |
+| Assinaturas | Criar recorrencias, trocar produto, cancelar e consultar cobrancas futuras. |
+| Produtos | Configurar preco, metodos de pagamento e regras de cobranca usadas por assinaturas e cobrancas. |
+| Cobrancas | Criar uma cobranca para um cliente e produto, pagar, cancelar ou marcar como paga. |
+| Alertas | Consultar alertas Ethoca/Visa e atualizar resolucoes. |
+
+## Antes de integrar
+
+<Steps>
+  <Step title="Solicite suas credenciais">
+    Solicite uma `apiKey` ou `token` para acessar o ambiente de sandbox.
+  </Step>
+  <Step title="Use o sandbox">
+    Implemente e valide seus fluxos usando `https://sandbox.api.veepag.com/`.
+  </Step>
+  <Step title="Homologue a integracao">
+    Depois dos testes, solicite a homologacao para habilitar o uso em producao.
+  </Step>
+  <Step title="Aponte para producao">
+    Troque a base URL para `https://api.veepag.com/` quando a integracao estiver aprovada.
+  </Step>
+</Steps>
+
+<Note>
+  Esta documentacao foi enriquecida a partir da codebase publica analisada em 2026-06-23. Quando um comportamento nao esta confirmado no codigo, ele aparece explicitamente como nao confirmado.
+</Note>
