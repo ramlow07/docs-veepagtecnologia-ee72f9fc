@@ -36,7 +36,7 @@ Most public API endpoints require one of these headers:
 - `apiKey`: API key in the `keyId.secret` format.
 - `token`: JWT. The codebase audit confirms a 14-day token lifetime.
 
-Do not assume `Authorization`, `X-API-Key`, or `X-Token` work for authentication. They are allowed in CORS, but guard support was not confirmed. Prefer `apiKey` or `token`.
+Do not use `Authorization`, `X-API-Key`, or `X-Token` for public API authentication. They are allowed in CORS, but the public API guard reads `apiKey` and `token`.
 
 `POST /v1/charge/pay` is an exception: it uses a captcha guard and does not use `apiKey` or `token`.
 
@@ -105,7 +105,7 @@ Use `POST /v1/transaction`.
 Required confirmed fields:
 
 - `companyId`
-- `amount`
+- `amount` in cents
 - `paymentProfile.cardNumber`
 - `paymentProfile.cardExpiration`
 - `paymentProfile.holderName`
@@ -114,7 +114,7 @@ Optional fields include `paymentProfile.cardCvv`, `installments`, `capture`, and
 
 When `client` is sent, `doc` or `cpf` must be a valid CPF/CNPJ. The API can create or reuse a client by document and create a payment method.
 
-Important caveat: the audit did not confirm whether transaction `amount` is expected in cents or reais. Confirm this before production usage.
+For transactions, send `amount` in cents. For example, `9900` means R$ 99,00.
 
 ### Search transactions
 
@@ -127,6 +127,8 @@ Use `GET /v2/transaction` for non-paginated single-company search. v2 requires `
 Use `POST /v1/transaction/capture`.
 
 Send `companyId` plus `transactionId` or `tid`. The DTO does not enforce this at schema level, but runtime needs at least one identifier.
+
+The current capture flow ignores the request `amount` field and captures the saved transaction amount (`transaction.amount.value`).
 
 ### Cancel a transaction
 
@@ -228,15 +230,15 @@ Confirmed events:
 - `charge.created`
 - `charge.update`
 
-Webhook signing, HMAC verification, and retries were not confirmed. The audit found simple JSON POST behavior with delivery errors logged.
+Webhook signing, HMAC verification, and retries are not implemented in the current outbound webhook provider. The provider sends a simple JSON POST and logs delivery errors.
 
 ## Do not invent
 
 When helping users integrate with Veepag:
 
 - Do not claim rate limits exist. HTTP rate limiting was not confirmed in code.
-- Do not claim webhook signatures or retries exist. They were not confirmed.
+- Do not claim webhook signatures or retries exist. They are not implemented in the current outbound webhook provider.
 - Do not assume idempotency except for `PUT /v1/charge/paid`.
-- Do not document `Authorization`, `X-API-Key`, or `X-Token` as supported auth headers unless engineering confirms guard support.
+- Do not document `Authorization`, `X-API-Key`, or `X-Token` as supported public API auth headers.
 - Do not define schemas for untyped batch subscription list items without product/engineering confirmation.
 - Treat full endpoints as enriched responses whose exact schema was not fully typed in the codebase.
