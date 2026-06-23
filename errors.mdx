@@ -1,11 +1,13 @@
 ---
 title: "Erros"
-description: "Formato padrao de erro, codigos HTTP e causas comuns na API Veepag."
+description: "Como entender erros da API Veepag e encontrar o próximo passo com mais clareza."
 ---
 
-A API retorna erros em um formato padrao para falhas de autenticacao, autorizacao, validacao e regras de negocio.
+Nem sempre uma chamada vai funcionar de primeira, e tudo bem. Esta página ajuda você a entender o que aconteceu e qual caminho seguir para corrigir a integração.
 
-## Formato padrao
+Na maior parte dos casos, os erros da API Veepag indicam uma destas situações: credencial ausente, permissão insuficiente, empresa inacessível, payload inválido ou uma regra de negócio que impediu a operação.
+
+## Formato padrão
 
 ```json
 {
@@ -23,33 +25,48 @@ A API retorna erros em um formato padrao para falhas de autenticacao, autorizaca
 }
 ```
 
-## Codigos HTTP
+O campo `code` é o melhor ponto de partida para tratar erros de forma programática. Já o campo `error_messages` traz detalhes que ajudam a entender qual campo ou regra precisa de atenção.
+
+## Códigos HTTP
 
 | Status | Code comum | Causa |
 | --- | --- | --- |
-| `400` | `ZodValidationException` ou codigo de dominio | Payload, query string ou regra de negocio invalida. |
-| `401` | `unauthorized` | `apiKey` ou `token` ausente ou invalido. |
-| `403` | `forbidden` | Credencial sem acesso a empresa ou permissao solicitada. |
-| `404` | `company_not_found`, `transaction_not_found` | Recurso nao encontrado. |
-| `500` | `unknown_server_error` | Erro nao mapeado no servidor. |
+| `400` | `ZodValidationException` ou código de domínio | Payload, query string ou regra de negócio inválida. |
+| `401` | `unauthorized` | `apiKey` ou `token` ausente ou inválido. |
+| `403` | `forbidden` | Credencial sem acesso à empresa ou permissão solicitada. |
+| `404` | `company_not_found`, `transaction_not_found` | Recurso não encontrado. |
+| `500` | `unknown_server_error` | Erro não mapeado no servidor. |
 
-## Erros de negocio comuns
+## Erros de negócio comuns
 
 | Code | Quando pode ocorrer |
 | --- | --- |
 | `company_disabled` | Empresa ou seller inativo. |
-| `payment_method_already_exists` | Cartao ja vinculado a outro cliente. |
-| `attempt_limit_exceeded` | Limite de cartoes por cliente excedido em producao. |
-| `integration_access_not_found` | Integracao de pagamento ausente para a empresa. |
-| `transaction_not_found` | Transacao nao encontrada para captura, cancelamento ou consulta. |
-| `product_not_found` | Produto inexistente ou inacessivel. |
-| `client_not_found` | Cliente inexistente ou inacessivel. |
-| `charge_not_found` | Cobranca inexistente ou inacessivel. |
+| `payment_method_already_exists` | Cartão já vinculado a outro cliente. |
+| `attempt_limit_exceeded` | Limite de cartões por cliente excedido em produção. |
+| `integration_access_not_found` | Integração de pagamento ausente para a empresa. |
+| `transaction_not_found` | Transação não encontrada para captura, cancelamento ou consulta. |
+| `product_not_found` | Produto inexistente ou inacessível. |
+| `client_not_found` | Cliente inexistente ou inacessível. |
+| `charge_not_found` | Cobrança inexistente ou inacessível. |
 
-## Validacao
+## Como investigar
 
-Falhas de validacao usam Zod na codebase. O campo `error_messages` pode incluir mensagens por campo, path e localizacao (`body`, `query` ou outro contexto de validacao).
+<Steps>
+  <Step title="Confira a autenticação">
+    Se o status for `401`, confirme se o header `apiKey` ou `token` foi enviado e se pertence ao mesmo ambiente da URL usada.
+  </Step>
+  <Step title="Confira o acesso à empresa">
+    Se o status for `403`, revise o `companyId` e as permissões da credencial. A API valida o acesso por empresa e por recurso.
+  </Step>
+  <Step title="Revise o payload">
+    Se o status for `400`, leia `error_messages`. Falhas de validação usam Zod e podem indicar o campo, o path e a localização do problema.
+  </Step>
+  <Step title="Valide os IDs enviados">
+    Se o status for `404`, confirme se o recurso existe, se pertence à empresa acessada e se o ID correto está sendo usado.
+  </Step>
+</Steps>
 
 <Tip>
-  Trate `code` como identificador programatico quando ele estiver presente. A mensagem pode variar conforme a validacao ou o provedor de pagamento.
+  Ao abrir um chamado com o time Veepag, envie o endpoint chamado, o horário aproximado, o `companyId`, o `code` retornado e o payload de erro. Isso ajuda a gente a investigar com mais rapidez e cuidado.
 </Tip>
