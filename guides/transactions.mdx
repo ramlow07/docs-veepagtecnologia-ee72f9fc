@@ -35,7 +35,7 @@ curl --request POST 'https://sandbox.api.veepag.com/v1/transaction' \
 ```
 
 <Note>
-  A codebase confirmou validações de cartão e cliente, mas a unidade monetária de `amount` em transações ficou como lacuna. Antes de usar em produção, confirme com o time Veepag se sua credencial espera valores em centavos ou reais.
+  Em transações, envie `amount` em centavos. Por exemplo, `9900` representa R$ 99,00.
 </Note>
 
 ## Consultar transações
@@ -54,6 +54,8 @@ curl --request GET 'https://sandbox.api.veepag.com/v1/transaction?page=1&limit=2
 ## Capturar uma autorização
 
 `POST /v1/transaction/capture` captura uma transação previamente autorizada. Use esse endpoint quando o pagamento foi autorizado antes, mas a captura ficou para uma etapa posterior.
+
+A captura usa o valor salvo na própria transação (`transaction.amount.value`). O campo `amount` existe no DTO, mas não é usado pelo fluxo atual de captura.
 
 ```json
 {
