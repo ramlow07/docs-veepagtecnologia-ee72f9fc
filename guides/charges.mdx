@@ -1,13 +1,13 @@
 ---
-title: "Cobrancas"
-description: "Como criar, pagar, cancelar e marcar cobrancas como pagas."
+title: "Cobranças"
+description: "Como criar, pagar, cancelar e marcar cobranças como pagas."
 ---
 
-Cobrancas conectam cliente, produto, vencimento, valor e opcoes de pagamento.
+Cobranças conectam cliente, produto, vencimento, valor e opções de pagamento. Use esse recurso quando você precisa gerar uma cobrança específica para um cliente, acompanhar seu status ou conciliá-la manualmente.
 
-## Criar cobranca
+## Criar cobrança
 
-`POST /v1/charge` cria uma cobranca para um cliente e produto.
+`POST /v1/charge` cria uma cobrança para um cliente e produto. No exemplo abaixo, criamos uma cobrança de mensalidade no sandbox.
 
 ```bash
 curl --request POST 'https://sandbox.api.veepag.com/v1/charge' \
@@ -24,26 +24,28 @@ curl --request POST 'https://sandbox.api.veepag.com/v1/charge' \
 ```
 
 <Note>
-  Em `POST /v1/charge`, o valor de `amount` e convertido para centavos internamente com `Math.round(amount * 100)`.
+  Em `POST /v1/charge`, o valor de `amount` é convertido para centavos internamente com `Math.round(amount * 100)`.
 </Note>
 
-## Pagar cobranca
+## Pagar cobrança
 
-`POST /v1/charge/pay` processa o pagamento da cobranca, mas usa reCAPTCHA em vez de `apiKey` ou `token`.
+`POST /v1/charge/pay` processa o pagamento da cobrança, mas usa reCAPTCHA em vez de `apiKey` ou `token`.
 
-Campos obrigatorios confirmados:
+Esse endpoint é diferente dos demais porque faz parte de um fluxo mais próximo de checkout/pagamento. Se você estiver integrando esse caminho, valide a experiência completa no sandbox antes de seguir para homologação.
 
-| Campo | Descricao |
+Campos obrigatórios confirmados:
+
+| Campo | Descrição |
 | --- | --- |
-| `_id` | ID da cobranca. |
+| `_id` | ID da cobrança. |
 | `companyId` | ID da empresa. |
-| `referenceId` | Referencia da cobranca. |
-| `paymentMethod` | Metodo de pagamento. |
-| `installments` | Obrigatorio no DTO, default `1`. |
+| `referenceId` | Referência da cobrança. |
+| `paymentMethod` | Método de pagamento. |
+| `installments` | Obrigatório no DTO, default `1`. |
 
-## Cancelar cobranca
+## Cancelar cobrança
 
-`PUT /v1/charge/cancel` cancela a cobranca e altera o status para `CANCELED_MANUAL`.
+`PUT /v1/charge/cancel` cancela a cobrança e altera o status para `CANCELED_MANUAL`.
 
 ```json
 {
@@ -54,7 +56,7 @@ Campos obrigatorios confirmados:
 
 ## Marcar como paga
 
-`PUT /v1/charge/paid` marca uma cobranca como paga.
+`PUT /v1/charge/paid` marca uma cobrança como paga. Esse caminho é útil para conciliações ou operações em que a confirmação de pagamento acontece fora do fluxo automático.
 
 ```json
 {
@@ -63,8 +65,12 @@ Campos obrigatorios confirmados:
 }
 ```
 
-Esse endpoint e idempotente quando a cobranca ja esta `PAID`: a API retorna a propria cobranca.
+Esse endpoint é idempotente quando a cobrança já está `PAID`: a API retorna a própria cobrança.
 
-## Exportar cobrancas
+## Exportar cobranças
 
-`GET /v1/charge/exports` exporta ate 10.000 itens. Reduza o periodo ou os filtros se esse limite for excedido.
+`GET /v1/charge/exports` exporta até 10.000 itens. Reduza o período ou os filtros se esse limite for excedido.
+
+<Tip>
+  Para conciliação, exporte períodos menores e mantenha o mesmo critério de filtro entre as consultas. Isso facilita comparar os dados com seu sistema interno.
+</Tip>
