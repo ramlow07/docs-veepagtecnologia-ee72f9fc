@@ -1,0 +1,3831 @@
+{
+  "openapi": "3.1.1",
+  "paths": {
+    "/v1/transaction": {
+      "get": {
+        "description": "Utilize este método para buscar transações.",
+        "operationId": "TransactionController_findTransactions",
+        "parameters": [
+          {
+            "name": "endLastUpdate",
+            "required": false,
+            "in": "query",
+            "description": "End date for last update filter (format: ISO date)",
+            "schema": {}
+          },
+          {
+            "name": "startLastUpdate",
+            "required": false,
+            "in": "query",
+            "description": "Start date for last update filter (format: ISO date)",
+            "schema": {}
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "End date filter (format: ISO date)",
+            "schema": {}
+          },
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "Start date filter (format: ISO date)",
+            "schema": {}
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (starting at 1)",
+            "schema": {}
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Max items per page (1-100)",
+            "schema": {}
+          },
+          {
+            "name": "sort.order",
+            "required": false,
+            "in": "query",
+            "description": "Sort direction (asc|desc)",
+            "schema": {}
+          },
+          {
+            "name": "sort.property",
+            "required": false,
+            "in": "query",
+            "description": "Sort field (createdAt|lastUpdate)",
+            "schema": {}
+          },
+          {
+            "name": "rangeTime.end",
+            "required": false,
+            "in": "query",
+            "description": "Range end (ISO string). Used with sort.type.",
+            "schema": {}
+          },
+          {
+            "name": "rangeTime.start",
+            "required": false,
+            "in": "query",
+            "description": "Range start (ISO string). Used with sort.type.",
+            "schema": {}
+          },
+          {
+            "name": "message",
+            "required": false,
+            "in": "query",
+            "description": "Message contains (case-insensitive)",
+            "schema": {}
+          },
+          {
+            "name": "cardLast4",
+            "required": false,
+            "in": "query",
+            "description": "Last 4 digits of the card",
+            "schema": {}
+          },
+          {
+            "name": "cardFirst6",
+            "required": false,
+            "in": "query",
+            "description": "First 6 digits of the card (BIN)",
+            "schema": {}
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Transaction status",
+            "schema": {}
+          },
+          {
+            "name": "clientDoc",
+            "required": false,
+            "in": "query",
+            "description": "Client document",
+            "schema": {}
+          },
+          {
+            "name": "clientId",
+            "required": false,
+            "in": "query",
+            "description": "Client ID",
+            "schema": {}
+          },
+          {
+            "name": "subscriptionId",
+            "required": false,
+            "in": "query",
+            "description": "Subscription ID",
+            "schema": {}
+          },
+          {
+            "name": "tid",
+            "required": false,
+            "in": "query",
+            "description": "Transaction TID",
+            "schema": {}
+          },
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "description": "Transaction ID",
+            "schema": {}
+          },
+          {
+            "name": "companyId",
+            "required": true,
+            "in": "query",
+            "description": "Company ID",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transactions successfully retrieved."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Buscar transações",
+        "tags": ["Transaction"]
+      },
+      "post": {
+        "operationId": "TransactionController_createTransaction",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransactionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transaction successfully created."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Adicionar uma nova transação",
+        "tags": ["Transaction"]
+      }
+    },
+    "/v2/transaction": {
+      "get": {
+        "operationId": "TransactionController_findTransactionsV2",
+        "parameters": [
+          {
+            "name": "endLastUpdate",
+            "required": false,
+            "in": "query",
+            "description": "End date for last update filter (format: ISO date)",
+            "schema": {}
+          },
+          {
+            "name": "startLastUpdate",
+            "required": false,
+            "in": "query",
+            "description": "Start date for last update filter (format: ISO date)",
+            "schema": {}
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "End date filter (format: ISO date)",
+            "schema": {}
+          },
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "Start date filter (format: ISO date)",
+            "schema": {}
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Transaction status",
+            "schema": {}
+          },
+          {
+            "name": "clientDoc",
+            "required": false,
+            "in": "query",
+            "description": "Client document",
+            "schema": {}
+          },
+          {
+            "name": "clientId",
+            "required": false,
+            "in": "query",
+            "description": "Client ID",
+            "schema": {}
+          },
+          {
+            "name": "subscriptionId",
+            "required": false,
+            "in": "query",
+            "description": "Subscription ID",
+            "schema": {}
+          },
+          {
+            "name": "tid",
+            "required": false,
+            "in": "query",
+            "description": "Transaction TID",
+            "schema": {}
+          },
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "description": "Transaction ID",
+            "schema": {}
+          },
+          {
+            "name": "companyId",
+            "required": true,
+            "in": "query",
+            "description": "Company ID",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transactions successfully retrieved."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Buscar transações (v2)",
+        "tags": ["Transaction"]
+      }
+    },
+    "/v1/transaction/capture": {
+      "post": {
+        "operationId": "TransactionController_captureTransaction",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CaptureTransactionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transaction successfully captured."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Capturar uma transação",
+        "tags": ["Transaction"]
+      }
+    },
+    "/v1/transaction/cancel": {
+      "put": {
+        "description": "Utilize este método para cancelar uma transação.",
+        "operationId": "TransactionController_cancelTransaction",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelTransactionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transaction successfully cancelled."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Cancelar uma transação",
+        "tags": ["Transaction"]
+      }
+    },
+    "/v1/transaction/cancelled-letter": {
+      "get": {
+        "operationId": "TransactionController_getCancelledLetter",
+        "parameters": [
+          {
+            "name": "companyId",
+            "required": true,
+            "in": "query",
+            "description": "Company ID",
+            "schema": {}
+          },
+          {
+            "name": "transactionId",
+            "required": true,
+            "in": "query",
+            "description": "Transaction ID",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Cancelled letter successfully retrieved."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Obter uma carta de cancelamento",
+        "tags": ["Transaction"]
+      }
+    },
+    "/v1/transaction/exports": {
+      "get": {
+        "description": "Utilize este método para exportar transações. Limite máximo: 10.000 itens/linhas por exportação. Se exceder, reduza o período e/ou filtros.",
+        "operationId": "TransactionController_downloadTransactions",
+        "parameters": [
+          {
+            "name": "rangeTime.end",
+            "required": false,
+            "in": "query",
+            "description": "Range end (ISO string). Used with sort.property.",
+            "schema": {}
+          },
+          {
+            "name": "rangeTime.start",
+            "required": false,
+            "in": "query",
+            "description": "Range start (ISO string). Used with sort.property.",
+            "schema": {}
+          },
+          {
+            "name": "message",
+            "required": false,
+            "in": "query",
+            "description": "Message contains (case-insensitive)",
+            "schema": {}
+          },
+          {
+            "name": "brandCard",
+            "required": false,
+            "in": "query",
+            "description": "Card brand filter",
+            "schema": {}
+          },
+          {
+            "name": "cardLast4",
+            "required": false,
+            "in": "query",
+            "description": "Last 4 digits of the card",
+            "schema": {}
+          },
+          {
+            "name": "cardFirst6",
+            "required": false,
+            "in": "query",
+            "description": "First 6 digits of the card (BIN)",
+            "schema": {}
+          },
+          {
+            "name": "sort.order",
+            "required": false,
+            "in": "query",
+            "description": "Sort direction (asc|desc)",
+            "schema": {}
+          },
+          {
+            "name": "sort.property",
+            "required": false,
+            "in": "query",
+            "description": "Range field (createdAt|lastUpdate)",
+            "schema": {}
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Transaction status (multiple values allowed)",
+            "schema": {
+              "type": "array",
+              "items": {}
+            }
+          },
+          {
+            "name": "clientId",
+            "required": false,
+            "in": "query",
+            "description": "Client ID",
+            "schema": {}
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "Product ID",
+            "schema": {}
+          },
+          {
+            "name": "subscriptionId",
+            "required": false,
+            "in": "query",
+            "description": "Subscription ID",
+            "schema": {}
+          },
+          {
+            "name": "tid",
+            "required": false,
+            "in": "query",
+            "description": "Transaction TID",
+            "schema": {}
+          },
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "description": "Transaction ID",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transactions successfully exported."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Exportar transações",
+        "tags": ["Transaction"]
+      }
+    },
+    "/v1/transaction/full": {
+      "get": {
+        "operationId": "TransactionController_getFullTransaction",
+        "parameters": [
+          {
+            "name": "tid",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full transaction retrieved."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "tags": ["Transaction"]
+      }
+    },
+    "/v1/client": {
+      "post": {
+        "operationId": "ClientController_createClient",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClientDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Client successfully created."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Criar cliente",
+        "tags": ["Client"]
+      },
+      "get": {
+        "operationId": "ClientController_findClients",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (starting at 1)",
+            "schema": {}
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Max items per page (1-100)",
+            "schema": {}
+          },
+          {
+            "name": "sort.order",
+            "required": false,
+            "in": "query",
+            "description": "Sort direction (asc|desc)",
+            "schema": {}
+          },
+          {
+            "name": "sort.property",
+            "required": false,
+            "in": "query",
+            "description": "Sort field (createdAt|lastUpdate)",
+            "schema": {}
+          },
+          {
+            "name": "rangeTime.end",
+            "required": false,
+            "in": "query",
+            "description": "Range end (ISO string). Used with sort.property.",
+            "schema": {}
+          },
+          {
+            "name": "rangeTime.start",
+            "required": false,
+            "in": "query",
+            "description": "Range start (ISO string). Used with sort.property.",
+            "schema": {}
+          },
+          {
+            "name": "personalInfo",
+            "required": false,
+            "in": "query",
+            "description": "Search term (name/doc/email/etc)",
+            "schema": {}
+          },
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "description": "Client ID",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Clients successfully retrieved."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Buscar clientes",
+        "tags": ["Client"]
+      },
+      "put": {
+        "operationId": "ClientController_updateClientNoDoc",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateClientDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Client successfully updated."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Atualizar cliente (sem atualizar doc)",
+        "tags": ["Client"]
+      }
+    },
+    "/v1/client/full": {
+      "get": {
+        "operationId": "ClientController_getFullClient",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full client retrieved."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Buscar cliente completo",
+        "tags": ["Client"]
+      }
+    },
+    "/v1/subscription": {
+      "post": {
+        "description": "Utilize este método para adicionar uma nova assinatura.\n\n#### Adicionei qualquer dado relavante que não tenha campo identificado em `metadata`\n\nOs dados abaixo são obrigatórios para fazer a inclusão. \n\n- `companyId: 'String'`\n\n- `product:{id:'String'}`.\n\n- `paymentMethod: 'String'` Valor aceito: `CREDIT_CARD`\n\n- `paymentProfile:{holderName: 'String', cardExpiration: 'String', cardNumber: 'String'}` cardExpiration precisa ter a data completa ex: 10/2026, cardCvv é opcional\n\n- `client:{name: 'String', cpf: 'String'}` CPF precisar ser válido\n\n\n Os outros dados opcionais você pode conferir abaixo em Schema e Exemple Value.",
+        "operationId": "SubscriptionController_createV1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSubscriptionV1Dto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Subscription successfully created."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Adicionar uma nova assinatura",
+        "tags": ["Subscription"]
+      },
+      "put": {
+        "operationId": "SubscriptionController_updateSubscription",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSubscriptionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Subscription updated."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Atualizar assinatura",
+        "tags": ["Subscription"]
+      },
+      "get": {
+        "description": "Utilize este método para buscar assinaturas.",
+        "operationId": "SubscriptionController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página (min 1, default 1)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Quantidade por página (1-100, default 20)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "sort.order",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": ["asc", "desc"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort.property",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": ["createdAt", "lastUpdate"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "rangeTime.end",
+            "required": false,
+            "in": "query",
+            "description": "Filtro de data final conforme sort.property",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rangeTime.start",
+            "required": false,
+            "in": "query",
+            "description": "Filtro de data inicial conforme sort.property",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ACTIVE",
+                  "ERROR_PAYMENT",
+                  "NO_PAYMENT_ROUTE",
+                  "CREATED",
+                  "PENDING_PAYMENT",
+                  "RECOVERED",
+                  "NO_PAYMENT",
+                  "CANCELED_ALERT_ETHOCA",
+                  "BLOCKED",
+                  "CANCELED_MANUAL",
+                  "IMPORTED",
+                  "STANDBY",
+                  "OVERDUE"
+                ]
+              }
+            }
+          },
+          {
+            "name": "clientId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subscriptions successfully found."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "summary": "Buscar assinaturas",
+        "tags": ["Subscription"]
+      }
+    },
+    "/v2/subscription": {
+      "post": {
+        "operationId": "SubscriptionController_createV2",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSubscriptionV2Dto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Subscription successfully created."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Adicionar uma nova assinatura",
+        "tags": ["Subscription"]
+      }
+    },
+    "/v1/subscription/list": {
+      "post": {
+        "operationId": "SubscriptionController_createList",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSubscriptionListDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Subscriptions batch processing started."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Adicionar assinaturas em lote",
+        "tags": ["Subscription"]
+      }
+    },
+    "/v1/subscription/cancel": {
+      "put": {
+        "description": "Utilize este método para cancelar uma assinatura.",
+        "operationId": "SubscriptionController_cancel",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelSubscriptionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Subscription successfully canceled."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Cancelar uma assinatura",
+        "tags": ["Subscription"]
+      }
+    },
+    "/v1/subscription/full": {
+      "get": {
+        "operationId": "SubscriptionController_getFullSubscription",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full subscription retrieved."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "tags": ["Subscription"]
+      }
+    },
+    "/v1/subscription/exports": {
+      "get": {
+        "description": "Limite máximo: 10.000 itens/linhas por exportação. Se exceder, reduza o período e/ou filtros.",
+        "operationId": "SubscriptionController_downloadSubscriptions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Subscriptions download retrieved."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Exportar assinaturas",
+        "tags": ["Subscription"]
+      }
+    },
+    "/v1/product": {
+      "get": {
+        "operationId": "ProductController_getProducts",
+        "parameters": [
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "description": "Product ID",
+            "schema": {}
+          },
+          {
+            "name": "companyIds",
+            "required": true,
+            "in": "query",
+            "description": "Company IDs (one or many)",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of products"
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Get products by filter",
+        "tags": ["Product"]
+      },
+      "post": {
+        "operationId": "ProductController_createProduct",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Product created"
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Create a product",
+        "tags": ["Product"]
+      },
+      "put": {
+        "operationId": "ProductController_updateProduct",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated"
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Update a product",
+        "tags": ["Product"]
+      }
+    },
+    "/v1/charge": {
+      "post": {
+        "operationId": "ChargeController_createCharge",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChargeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Charge successfully created"
+          },
+          "400": {
+            "description": "Validation error"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Create a new charge",
+        "tags": ["Charge"]
+      },
+      "put": {
+        "operationId": "ChargeController_updateCharge",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateChargeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Charge successfully updated"
+          },
+          "400": {
+            "description": "Validation error"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Atualizar cobrança",
+        "tags": ["Charge"]
+      },
+      "get": {
+        "operationId": "ChargeController_findCharges",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (starting at 1)",
+            "schema": {}
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Max items per page (1-100)",
+            "schema": {}
+          },
+          {
+            "name": "sort.order",
+            "required": false,
+            "in": "query",
+            "description": "Sort direction (asc|desc)",
+            "schema": {}
+          },
+          {
+            "name": "sort.property",
+            "required": false,
+            "in": "query",
+            "description": "Sort field (createdAt|lastUpdate)",
+            "schema": {}
+          },
+          {
+            "name": "rangeTime.end",
+            "required": false,
+            "in": "query",
+            "description": "Range end (ISO string). Used with sort.property.",
+            "schema": {}
+          },
+          {
+            "name": "rangeTime.start",
+            "required": false,
+            "in": "query",
+            "description": "Range start (ISO string). Used with sort.property.",
+            "schema": {}
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Charge status (multiple values allowed)",
+            "schema": {
+              "type": "array",
+              "items": {}
+            }
+          },
+          {
+            "name": "clientId",
+            "required": false,
+            "in": "query",
+            "description": "Client ID",
+            "schema": {}
+          },
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "description": "Charge ID",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Charges successfully found."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Buscar cobranças",
+        "tags": ["Charge"]
+      }
+    },
+    "/v1/charge/pay": {
+      "post": {
+        "operationId": "ChargeController_payCharge",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PayChargeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Charge successfully payed"
+          },
+          "400": {
+            "description": "Validation error"
+          }
+        },
+        "summary": "Make a payment for a charge",
+        "tags": ["Charge"]
+      }
+    },
+    "/v1/charge/cancel": {
+      "put": {
+        "operationId": "ChargeController_cancelCharge",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelChargeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Charge successfully canceled"
+          },
+          "400": {
+            "description": "Validation error"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Cancel a charge",
+        "tags": ["Charge"]
+      }
+    },
+    "/v1/charge/paid": {
+      "put": {
+        "operationId": "ChargeController_markChargeAsPaid",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarkChargeAsPaidDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Charge successfully updated"
+          },
+          "400": {
+            "description": "Validation error"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Marcar cobrança como paga (manual)",
+        "tags": ["Charge"]
+      }
+    },
+    "/v1/charge/exports": {
+      "get": {
+        "description": "Limite máximo: 10.000 itens/linhas por exportação. Se exceder, reduza o período e/ou filtros.",
+        "operationId": "ChargeController_downloadCharges",
+        "parameters": [
+          {
+            "name": "rangeTime.end",
+            "required": false,
+            "in": "query",
+            "description": "Range end (ISO string). Used with sort.property.",
+            "schema": {}
+          },
+          {
+            "name": "rangeTime.start",
+            "required": false,
+            "in": "query",
+            "description": "Range start (ISO string). Used with sort.property.",
+            "schema": {}
+          },
+          {
+            "name": "sort.order",
+            "required": false,
+            "in": "query",
+            "description": "Sort direction (asc|desc)",
+            "schema": {}
+          },
+          {
+            "name": "sort.property",
+            "required": false,
+            "in": "query",
+            "description": "Range field (createdAt|lastUpdate)",
+            "schema": {}
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Charge status (multiple values allowed)",
+            "schema": {
+              "type": "array",
+              "items": {}
+            }
+          },
+          {
+            "name": "clientId",
+            "required": false,
+            "in": "query",
+            "description": "Client ID",
+            "schema": {}
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "description": "Product ID",
+            "schema": {}
+          },
+          {
+            "name": "subscriptionId",
+            "required": false,
+            "in": "query",
+            "description": "Subscription ID",
+            "schema": {}
+          },
+          {
+            "name": "ids",
+            "required": false,
+            "in": "query",
+            "description": "Charge IDs (multiple values allowed)",
+            "schema": {
+              "type": "array",
+              "items": {}
+            }
+          },
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "description": "Charge ID",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Charges download retrieved."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Exportar cobranças",
+        "tags": ["Charge"]
+      }
+    },
+    "/v1/charge/full": {
+      "get": {
+        "operationId": "ChargeController_getFullCharge",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full charge retrieved."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Buscar cobrança completa",
+        "tags": ["Charge"]
+      }
+    },
+    "/v1/alert/update/resolved": {
+      "post": {
+        "operationId": "AlertController_updateResolved",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateResolvedDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Alert successfully resolved."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Mark alert as resolved manually",
+        "tags": ["Alert"]
+      }
+    },
+    "/v1/alert/retry-refund": {
+      "post": {
+        "operationId": "AlertController_retryRefund",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RetryRefundDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Retry refund request successfully submitted."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Request retry refund for alerts",
+        "tags": ["Alert"]
+      }
+    },
+    "/v1/alert": {
+      "get": {
+        "description": "Suporta paginação, filtro por id, referenceId, status[], cardFirst6, cardLast4, rangeTime e sort {property, order}.",
+        "operationId": "AlertController_findAlerts",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "cardLast4",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cardFirst6",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort.order",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": ["asc", "desc"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort.property",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": ["createdAt", "lastUpdate"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "rangeTime.end",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rangeTime.start",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {}
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": ["ETHOCA", "VISA"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "referenceId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alerts successfully retrieved."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Buscar alertas",
+        "tags": ["Alert"]
+      }
+    },
+    "/v1/alert/exports": {
+      "get": {
+        "description": "Limite máximo: 100.000 itens/linhas por exportação. Se exceder, reduza o período e/ou filtros.",
+        "operationId": "AlertController_downloadAlerts",
+        "parameters": [
+          {
+            "name": "cardLast4",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cardFirst6",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort.order",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": ["asc", "desc"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort.property",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": ["createdAt", "lastUpdate"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "rangeTime.end",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rangeTime.start",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {}
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": ["ETHOCA", "VISA"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "referenceId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alerts download retrieved."
+          },
+          "400": {
+            "description": "Validation error."
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "summary": "Exportar alertas",
+        "tags": ["Alert"]
+      }
+    }
+  },
+  "info": {
+    "title": "Veepag API",
+    "description": "**Bem-vindo à API Veepag!** Para começar a utilizar nossa plataforma de pagamentos, você precisa <b>solicitar um token de autorização.</b> Com ele, você terá acesso ao <b>ambiente de sandbox</b> para realizar testes e simulações. <b>Após concluir os testes, solicite a homologação</b> para que sua aplicação seja aprovada e pronta para ser usada em produção. Estamos aqui para auxiliá-lo em todo o processo!",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "https://sandbox.api.veepag.com/",
+      "description": "Sandbox"
+    },
+    {
+      "url": "https://api.veepag.com/",
+      "description": "Produção"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "apiKey"
+      }
+    },
+    "schemas": {
+      "CreateTransactionDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string"
+          },
+          "paymentProfile": {
+            "type": "object",
+            "properties": {
+              "cardNumber": {
+                "type": "string"
+              },
+              "cardExpiration": {
+                "type": "string"
+              },
+              "holderName": {
+                "type": "string"
+              },
+              "cardCvv": {
+                "type": "string"
+              }
+            },
+            "required": ["cardNumber", "cardExpiration", "holderName"]
+          },
+          "client": {
+            "type": "object",
+            "properties": {
+              "referenceId": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "doc": {
+                "type": "string",
+                "minLength": 1
+              },
+              "cpf": {
+                "type": "string",
+                "minLength": 1
+              },
+              "birth": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "phone": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "note": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["INDIVIDUAL", "COMPANY"],
+                "x-enumNames": ["INDIVIDUAL", "COMPANY"],
+                "nullable": true
+              },
+              "address": {
+                "type": "object",
+                "properties": {
+                  "street": {
+                    "type": "string"
+                  },
+                  "number": {
+                    "type": "string"
+                  },
+                  "additionalDetails": {
+                    "type": "string"
+                  },
+                  "complement": {
+                    "type": "string"
+                  },
+                  "zipcode": {
+                    "type": "string"
+                  },
+                  "neighborhood": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  }
+                }
+              },
+              "device": {
+                "type": "object",
+                "properties": {
+                  "colorDepth": {
+                    "type": "number"
+                  },
+                  "javaEnable": {
+                    "type": "boolean"
+                  },
+                  "language": {
+                    "type": "string"
+                  },
+                  "screenHeight": {
+                    "type": "number"
+                  },
+                  "screenWidth": {
+                    "type": "number"
+                  },
+                  "timezoneOffset": {
+                    "type": "number"
+                  },
+                  "userAgent": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "javaEnabled": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "ipAddress": {
+                "type": "string"
+              }
+            },
+            "required": ["name"]
+          },
+          "amount": {
+            "type": "number"
+          },
+          "installments": {
+            "type": "number",
+            "default": 1
+          },
+          "capture": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": ["companyId", "paymentProfile", "amount"]
+      },
+      "CaptureTransactionDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string"
+          },
+          "tid": {
+            "type": "string"
+          },
+          "transactionId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          }
+        },
+        "required": ["companyId"]
+      },
+      "CancelTransactionDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string"
+          },
+          "tid": {
+            "type": "string"
+          },
+          "transactionId": {
+            "type": "string"
+          },
+          "cancelSubscription": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": ["companyId"]
+      },
+      "CreateClientDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": ["INDIVIDUAL", "COMPANY"],
+            "x-enumNames": ["INDIVIDUAL", "COMPANY"],
+            "nullable": true
+          },
+          "referenceId": {
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "birth": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true
+          },
+          "phone": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "object",
+            "properties": {
+              "street": {
+                "type": "string",
+                "nullable": true
+              },
+              "number": {
+                "type": "string",
+                "nullable": true
+              },
+              "additionalDetails": {
+                "type": "string",
+                "nullable": true
+              },
+              "complement": {
+                "type": "string",
+                "nullable": true
+              },
+              "zipcode": {
+                "type": "string",
+                "nullable": true
+              },
+              "neighborhood": {
+                "type": "string",
+                "nullable": true
+              },
+              "city": {
+                "type": "string",
+                "nullable": true
+              },
+              "state": {
+                "type": "string",
+                "nullable": true
+              },
+              "country": {
+                "type": "string",
+                "nullable": true
+              }
+            },
+            "nullable": true
+          },
+          "device": {
+            "type": "object",
+            "properties": {
+              "colorDepth": {
+                "type": "number"
+              },
+              "javaEnable": {
+                "type": "boolean"
+              },
+              "language": {
+                "type": "string"
+              },
+              "screenHeight": {
+                "type": "number"
+              },
+              "screenWidth": {
+                "type": "number"
+              },
+              "timezoneOffset": {
+                "type": "number"
+              },
+              "userAgent": {
+                "type": "string",
+                "nullable": true
+              },
+              "javaEnabled": {
+                "type": "boolean"
+              }
+            },
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "doc": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["companyId", "name", "doc"]
+      },
+      "UpdateClientDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": ["INDIVIDUAL", "COMPANY"],
+            "x-enumNames": ["INDIVIDUAL", "COMPANY"],
+            "nullable": true
+          },
+          "referenceId": {
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "birth": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true
+          },
+          "phone": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "object",
+            "properties": {
+              "street": {
+                "type": "string",
+                "nullable": true
+              },
+              "number": {
+                "type": "string",
+                "nullable": true
+              },
+              "additionalDetails": {
+                "type": "string",
+                "nullable": true
+              },
+              "complement": {
+                "type": "string",
+                "nullable": true
+              },
+              "zipcode": {
+                "type": "string",
+                "nullable": true
+              },
+              "neighborhood": {
+                "type": "string",
+                "nullable": true
+              },
+              "city": {
+                "type": "string",
+                "nullable": true
+              },
+              "state": {
+                "type": "string",
+                "nullable": true
+              },
+              "country": {
+                "type": "string",
+                "nullable": true
+              }
+            },
+            "nullable": true
+          },
+          "device": {
+            "type": "object",
+            "properties": {
+              "colorDepth": {
+                "type": "number"
+              },
+              "javaEnable": {
+                "type": "boolean"
+              },
+              "language": {
+                "type": "string"
+              },
+              "screenHeight": {
+                "type": "number"
+              },
+              "screenWidth": {
+                "type": "number"
+              },
+              "timezoneOffset": {
+                "type": "number"
+              },
+              "userAgent": {
+                "type": "string",
+                "nullable": true
+              },
+              "javaEnabled": {
+                "type": "boolean"
+              }
+            },
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["_id"]
+      },
+      "CreateSubscriptionV1Dto": {
+        "type": "object",
+        "properties": {
+          "referenceId": {
+            "type": "string",
+            "nullable": true
+          },
+          "origin": {
+            "type": "string",
+            "enum": ["API", "CHECKOUT", "IMPORTED", "AFFILIATE"],
+            "x-enumNames": ["API", "CHECKOUT", "IMPORTED", "AFFILIATE"],
+            "default": "API"
+          },
+          "captchaToken": {
+            "type": "string"
+          },
+          "companyId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "product": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": ["id"]
+          },
+          "paymentMethod": {
+            "type": "string",
+            "enum": ["CREDIT_CARD", "DEBIT_CARD", "BOLETO", "PIX"],
+            "x-enumNames": ["CREDIT_CARD", "DEBIT_CARD", "BOLETO", "PIX"]
+          },
+          "paymentProfile": {
+            "type": "object",
+            "properties": {
+              "holderName": {
+                "type": "string"
+              },
+              "cardExpiration": {
+                "type": "string"
+              },
+              "cardNumber": {
+                "type": "string"
+              },
+              "cardCvv": {
+                "type": "string"
+              }
+            }
+          },
+          "cardAuthId": {
+            "type": "string",
+            "nullable": true
+          },
+          "client": {
+            "type": "object",
+            "properties": {
+              "referenceId": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "doc": {
+                "type": "string",
+                "minLength": 1
+              },
+              "cpf": {
+                "type": "string",
+                "minLength": 1
+              },
+              "birth": {
+                "oneOf": [
+                  {},
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": ["INDIVIDUAL", "COMPANY"],
+                "x-enumNames": ["INDIVIDUAL", "COMPANY"],
+                "nullable": true
+              },
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "phone": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "note": {
+                "type": "string"
+              },
+              "address": {
+                "type": "object",
+                "properties": {
+                  "street": {
+                    "type": "string"
+                  },
+                  "number": {
+                    "type": "string"
+                  },
+                  "additionalDetails": {
+                    "type": "string"
+                  },
+                  "complement": {
+                    "type": "string"
+                  },
+                  "zipcode": {
+                    "type": "string"
+                  },
+                  "neighborhood": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  }
+                }
+              },
+              "device": {
+                "type": "object",
+                "properties": {
+                  "colorDepth": {
+                    "type": "number"
+                  },
+                  "javaEnable": {
+                    "type": "boolean"
+                  },
+                  "language": {
+                    "type": "string"
+                  },
+                  "screenHeight": {
+                    "type": "number"
+                  },
+                  "screenWidth": {
+                    "type": "number"
+                  },
+                  "timezoneOffset": {
+                    "type": "number"
+                  },
+                  "userAgent": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "javaEnabled": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "ipAddress": {
+                "type": "string"
+              }
+            },
+            "required": ["name"]
+          },
+          "installments": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "default": 1
+          },
+          "affiliateId": {
+            "type": "string",
+            "nullable": true
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": ["companyId", "product", "paymentMethod", "installments"]
+      },
+      "CreateSubscriptionV2Dto": {
+        "type": "object",
+        "properties": {
+          "referenceId": {
+            "type": "string"
+          },
+          "companyId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "productId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "paymentMethod": {
+            "type": "string",
+            "enum": ["CREDIT_CARD", "DEBIT_CARD", "BOLETO", "PIX"],
+            "x-enumNames": ["CREDIT_CARD", "DEBIT_CARD", "BOLETO", "PIX"]
+          },
+          "clientId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "origin": {
+            "type": "string",
+            "enum": ["API", "CHECKOUT", "IMPORTED", "AFFILIATE"],
+            "x-enumNames": ["API", "CHECKOUT", "IMPORTED", "AFFILIATE"],
+            "default": "API"
+          },
+          "affiliateId": {
+            "type": "string"
+          },
+          "dueDate": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {}
+            ]
+          }
+        },
+        "required": ["companyId", "productId", "clientId", "dueDate"]
+      },
+      "CreateSubscriptionListDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "list": {
+            "type": "array",
+            "minItems": 1,
+            "items": {}
+          },
+          "filter": {}
+        },
+        "required": ["companyId", "list"]
+      },
+      "CancelSubscriptionDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string"
+          },
+          "subscriptionId": {
+            "type": "string"
+          }
+        },
+        "required": ["companyId", "subscriptionId"]
+      },
+      "UpdateSubscriptionDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "companyId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "productId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["_id", "companyId"]
+      },
+      "CreateProductDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "setting": {
+            "type": "object",
+            "properties": {
+              "re1to1": {
+                "type": "boolean"
+              },
+              "successChargeDay": {
+                "type": "boolean"
+              },
+              "cardAuth": {
+                "type": "boolean",
+                "nullable": true
+              },
+              "limitOverdueCharges": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "qty": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  }
+                },
+                "required": ["active", "qty"]
+              }
+            }
+          },
+          "charge": {
+            "type": "object",
+            "properties": {
+              "frequencyDays": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              },
+              "deniedIntervalDays": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              },
+              "maxDeniedAttempts": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              },
+              "invoiceIdentification": {
+                "type": "string"
+              },
+              "paymentMethod": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["CREDIT_CARD", "DEBIT_CARD", "BOLETO", "PIX"],
+                      "x-enumNames": [
+                        "CREDIT_CARD",
+                        "DEBIT_CARD",
+                        "BOLETO",
+                        "PIX"
+                      ]
+                    },
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "installments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "installment": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "exclusiveMinimum": true
+                          },
+                          "fee": {
+                            "type": "number",
+                            "minimum": 0,
+                            "exclusiveMinimum": false
+                          },
+                          "totalAmount": {
+                            "type": "number",
+                            "minimum": 0,
+                            "exclusiveMinimum": false
+                          },
+                          "installmentAmount": {
+                            "type": "number",
+                            "minimum": 0,
+                            "exclusiveMinimum": false
+                          }
+                        },
+                        "required": ["installment"]
+                      }
+                    }
+                  },
+                  "required": ["type", "active", "installments"]
+                }
+              },
+              "routes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "enum": [
+                        "ETHOCA",
+                        "THE_MEMBERS",
+                        "rede",
+                        "rede_zero_dollar",
+                        "zoop",
+                        "zoop_v1",
+                        "veepag",
+                        "iopay",
+                        "pagarme_v5",
+                        "pagarme_v4",
+                        "pagseguro",
+                        "pagseguro_v2",
+                        "cielo",
+                        "cielo_zero_auth",
+                        "mercadopago",
+                        "veepag_3ds"
+                      ],
+                      "x-enumNames": [
+                        "ETHOCA",
+                        "THE_MEMBERS",
+                        "REDE",
+                        "REDE_ZERO_DOLLAR",
+                        "ZOOP",
+                        "ZOOP_V1",
+                        "VEEPAG",
+                        "IOPAY",
+                        "PAGAR_ME_V5",
+                        "PAGAR_ME_V4",
+                        "PAG_SEGURO",
+                        "PAG_SEGURO_V2",
+                        "CIELO",
+                        "CIELO_ZERO_AUTH",
+                        "MERCADOPAGO",
+                        "VEEPAG_3DS"
+                      ]
+                    },
+                    "integrationId": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "settings": {
+                      "type": "object",
+                      "properties": {
+                        "brandCard": {
+                          "type": "object",
+                          "properties": {
+                            "all": {
+                              "type": "boolean"
+                            },
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": ["all", "list"]
+                        },
+                        "modality": {
+                          "type": "object",
+                          "properties": {
+                            "initial": {
+                              "type": "boolean"
+                            },
+                            "recurring": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": ["initial", "recurring"]
+                        }
+                      }
+                    },
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "order": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true
+                    }
+                  },
+                  "required": ["id", "integrationId", "name", "active"]
+                },
+                "default": []
+              }
+            },
+            "required": [
+              "frequencyDays",
+              "deniedIntervalDays",
+              "maxDeniedAttempts",
+              "invoiceIdentification",
+              "paymentMethod"
+            ]
+          },
+          "product": {
+            "type": "object",
+            "properties": {
+              "price": {
+                "type": "number",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              },
+              "originalPrice": {
+                "type": "number",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              },
+              "title": {
+                "type": "string"
+              },
+              "photo": {
+                "type": "string"
+              },
+              "warranty": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              },
+              "description": {
+                "type": "string"
+              },
+              "SKU": {
+                "type": "string"
+              }
+            },
+            "required": ["price", "title", "warranty"]
+          },
+          "unsubscription": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["OVERDUE_DAYS", "NEVER", "CARD_ATTEMPTS"],
+                "x-enumNames": ["OVERDUE_DAYS", "NEVER", "CARD_ATTEMPTS"]
+              },
+              "overdueDays": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              }
+            },
+            "required": ["type"]
+          },
+          "checkout": {
+            "type": "object",
+            "properties": {
+              "header": {
+                "type": "object",
+                "properties": {
+                  "color": {
+                    "type": "string"
+                  },
+                  "fixed": {
+                    "type": "boolean"
+                  },
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "logo": {
+                    "type": "string"
+                  }
+                },
+                "required": ["color", "fixed", "active", "logo"]
+              },
+              "topBanner": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                },
+                "required": ["active", "url"]
+              },
+              "sideBanner": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                },
+                "required": ["active", "url"]
+              },
+              "contact": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": ["active"]
+              },
+              "terms": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": ["active", "text"]
+              },
+              "privacyterms": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "linkTermsUse": {
+                    "type": "string"
+                  },
+                  "linkPrivacyPolicy": {
+                    "type": "string"
+                  }
+                },
+                "required": ["active", "linkTermsUse", "linkPrivacyPolicy"]
+              },
+              "tracking": {
+                "type": "object",
+                "properties": {
+                  "meta": {
+                    "type": "string"
+                  },
+                  "gtm": {
+                    "type": "string"
+                  }
+                }
+              },
+              "color": {
+                "type": "object",
+                "properties": {
+                  "textPrimary": {
+                    "type": "string"
+                  },
+                  "secondary": {
+                    "type": "string"
+                  },
+                  "background": {
+                    "type": "string"
+                  },
+                  "primary": {
+                    "type": "string"
+                  },
+                  "textSecondary": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "textPrimary",
+                  "secondary",
+                  "background",
+                  "primary",
+                  "textSecondary"
+                ]
+              },
+              "countdown": {
+                "type": "object",
+                "properties": {
+                  "time": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  },
+                  "fixed": {
+                    "type": "boolean"
+                  },
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "color": {
+                    "type": "object",
+                    "properties": {
+                      "background": {
+                        "type": "string"
+                      },
+                      "text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["background", "text"]
+                  }
+                },
+                "required": ["time", "fixed", "active", "color"]
+              },
+              "faq": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "list": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "question": {
+                          "type": "string"
+                        },
+                        "answer": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["question", "answer"]
+                    }
+                  }
+                },
+                "required": ["active", "list"]
+              }
+            }
+          },
+          "send": {
+            "type": "object",
+            "properties": {
+              "active": {
+                "type": "boolean"
+              },
+              "list": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "integrationId": {
+                      "type": "string"
+                    },
+                    "linkAccess": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "productId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "active",
+                    "id",
+                    "integrationId",
+                    "linkAccess",
+                    "name",
+                    "productId"
+                  ]
+                }
+              }
+            },
+            "required": ["active", "list"]
+          },
+          "discount": {
+            "type": "object",
+            "properties": {
+              "list": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "discount": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "exclusiveMinimum": false
+                        }
+                      },
+                      "required": ["value"]
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "method": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["discount", "id", "method", "type"]
+                },
+                "default": []
+              }
+            }
+          },
+          "notification": {
+            "type": "object",
+            "properties": {
+              "overdueCharge": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "boolean"
+                  }
+                },
+                "required": ["email"]
+              },
+              "paidCharge": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "boolean"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        }
+      },
+      "UpdateProductDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "setting": {
+            "type": "object",
+            "properties": {
+              "re1to1": {
+                "type": "boolean"
+              },
+              "successChargeDay": {
+                "type": "boolean"
+              },
+              "cardAuth": {
+                "type": "boolean",
+                "nullable": true
+              },
+              "limitOverdueCharges": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "qty": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  }
+                }
+              }
+            }
+          },
+          "charge": {
+            "type": "object",
+            "properties": {
+              "frequencyDays": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              },
+              "deniedIntervalDays": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              },
+              "maxDeniedAttempts": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              },
+              "invoiceIdentification": {
+                "type": "string"
+              },
+              "paymentMethod": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["CREDIT_CARD", "DEBIT_CARD", "BOLETO", "PIX"],
+                      "x-enumNames": [
+                        "CREDIT_CARD",
+                        "DEBIT_CARD",
+                        "BOLETO",
+                        "PIX"
+                      ]
+                    },
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "installments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "installment": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "exclusiveMinimum": true
+                          },
+                          "fee": {
+                            "type": "number",
+                            "minimum": 0,
+                            "exclusiveMinimum": false
+                          },
+                          "totalAmount": {
+                            "type": "number",
+                            "minimum": 0,
+                            "exclusiveMinimum": false
+                          },
+                          "installmentAmount": {
+                            "type": "number",
+                            "minimum": 0,
+                            "exclusiveMinimum": false
+                          }
+                        },
+                        "required": ["installment"]
+                      }
+                    }
+                  }
+                }
+              },
+              "routes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "enum": [
+                        "ETHOCA",
+                        "THE_MEMBERS",
+                        "rede",
+                        "rede_zero_dollar",
+                        "zoop",
+                        "zoop_v1",
+                        "veepag",
+                        "iopay",
+                        "pagarme_v5",
+                        "pagarme_v4",
+                        "pagseguro",
+                        "pagseguro_v2",
+                        "cielo",
+                        "cielo_zero_auth",
+                        "mercadopago",
+                        "veepag_3ds"
+                      ],
+                      "x-enumNames": [
+                        "ETHOCA",
+                        "THE_MEMBERS",
+                        "REDE",
+                        "REDE_ZERO_DOLLAR",
+                        "ZOOP",
+                        "ZOOP_V1",
+                        "VEEPAG",
+                        "IOPAY",
+                        "PAGAR_ME_V5",
+                        "PAGAR_ME_V4",
+                        "PAG_SEGURO",
+                        "PAG_SEGURO_V2",
+                        "CIELO",
+                        "CIELO_ZERO_AUTH",
+                        "MERCADOPAGO",
+                        "VEEPAG_3DS"
+                      ]
+                    },
+                    "integrationId": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "settings": {
+                      "type": "object",
+                      "properties": {
+                        "brandCard": {
+                          "type": "object",
+                          "properties": {
+                            "all": {
+                              "type": "boolean"
+                            },
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": ["all", "list"]
+                        },
+                        "modality": {
+                          "type": "object",
+                          "properties": {
+                            "initial": {
+                              "type": "boolean"
+                            },
+                            "recurring": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": ["initial", "recurring"]
+                        }
+                      }
+                    },
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "order": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true
+                    }
+                  },
+                  "required": ["id", "integrationId", "name", "active"]
+                },
+                "default": []
+              }
+            }
+          },
+          "product": {
+            "type": "object",
+            "properties": {
+              "price": {
+                "type": "number",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              },
+              "originalPrice": {
+                "type": "number",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              },
+              "title": {
+                "type": "string"
+              },
+              "photo": {
+                "type": "string"
+              },
+              "warranty": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              },
+              "description": {
+                "type": "string"
+              },
+              "SKU": {
+                "type": "string"
+              }
+            }
+          },
+          "unsubscription": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["OVERDUE_DAYS", "NEVER", "CARD_ATTEMPTS"],
+                "x-enumNames": ["OVERDUE_DAYS", "NEVER", "CARD_ATTEMPTS"]
+              },
+              "overdueDays": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": false
+              }
+            }
+          },
+          "checkout": {
+            "type": "object",
+            "properties": {
+              "header": {
+                "type": "object",
+                "properties": {
+                  "color": {
+                    "type": "string"
+                  },
+                  "fixed": {
+                    "type": "boolean"
+                  },
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "logo": {
+                    "type": "string"
+                  }
+                }
+              },
+              "topBanner": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                }
+              },
+              "sideBanner": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                }
+              },
+              "contact": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                }
+              },
+              "terms": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                }
+              },
+              "privacyterms": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "linkTermsUse": {
+                    "type": "string"
+                  },
+                  "linkPrivacyPolicy": {
+                    "type": "string"
+                  }
+                }
+              },
+              "tracking": {
+                "type": "object",
+                "properties": {
+                  "meta": {
+                    "type": "string"
+                  },
+                  "gtm": {
+                    "type": "string"
+                  }
+                }
+              },
+              "color": {
+                "type": "object",
+                "properties": {
+                  "textPrimary": {
+                    "type": "string"
+                  },
+                  "secondary": {
+                    "type": "string"
+                  },
+                  "background": {
+                    "type": "string"
+                  },
+                  "primary": {
+                    "type": "string"
+                  },
+                  "textSecondary": {
+                    "type": "string"
+                  }
+                }
+              },
+              "countdown": {
+                "type": "object",
+                "properties": {
+                  "time": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  },
+                  "fixed": {
+                    "type": "boolean"
+                  },
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "color": {
+                    "type": "object",
+                    "properties": {
+                      "background": {
+                        "type": "string"
+                      },
+                      "text": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "faq": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "list": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "question": {
+                          "type": "string"
+                        },
+                        "answer": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "send": {
+            "type": "object",
+            "properties": {
+              "active": {
+                "type": "boolean"
+              },
+              "list": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "integrationId": {
+                      "type": "string"
+                    },
+                    "linkAccess": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "productId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "discount": {
+            "type": "object",
+            "properties": {
+              "list": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "discount": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "exclusiveMinimum": false
+                        }
+                      },
+                      "required": ["value"]
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "method": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["discount", "id", "method", "type"]
+                },
+                "default": []
+              }
+            }
+          },
+          "notification": {
+            "type": "object",
+            "properties": {
+              "overdueCharge": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "paidCharge": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "boolean"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateChargeDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "productId": {
+            "type": "string"
+          },
+          "paymentMethodOption": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["CREDIT_CARD", "DEBIT_CARD", "BOLETO", "PIX"],
+                  "x-enumNames": ["CREDIT_CARD", "DEBIT_CARD", "BOLETO", "PIX"]
+                },
+                "active": {
+                  "type": "boolean"
+                },
+                "installments": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "installment": {
+                        "type": "number"
+                      },
+                      "totalAmount": {
+                        "type": "number"
+                      },
+                      "installmentAmount": {
+                        "type": "number"
+                      },
+                      "fee": {
+                        "type": "number"
+                      }
+                    },
+                    "required": ["installment"]
+                  }
+                }
+              },
+              "required": ["type"]
+            },
+            "default": []
+          },
+          "dueDate": {},
+          "amount": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "description": {
+            "type": "string"
+          },
+          "cardAuth": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "required": ["companyId", "clientId", "productId", "dueDate", "amount"]
+      },
+      "PayChargeDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "companyId": {
+            "type": "string"
+          },
+          "referenceId": {
+            "type": "string"
+          },
+          "origin": {
+            "type": "string"
+          },
+          "paymentMethod": {
+            "type": "string",
+            "enum": ["CREDIT_CARD", "DEBIT_CARD", "BOLETO", "PIX"],
+            "x-enumNames": ["CREDIT_CARD", "DEBIT_CARD", "BOLETO", "PIX"]
+          },
+          "captchaToken": {
+            "type": "string"
+          },
+          "installments": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "default": 1
+          },
+          "paymentProfile": {
+            "type": "object",
+            "properties": {
+              "cardCvv": {
+                "type": "string",
+                "nullable": true
+              },
+              "cardExpiration": {
+                "type": "string"
+              },
+              "cardNumber": {
+                "type": "string"
+              },
+              "holderName": {
+                "type": "string"
+              }
+            }
+          },
+          "cardAuthId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "_id",
+          "companyId",
+          "referenceId",
+          "paymentMethod",
+          "installments"
+        ]
+      },
+      "CancelChargeDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string"
+          },
+          "chargeId": {
+            "type": "string"
+          }
+        },
+        "required": ["companyId", "chargeId"]
+      },
+      "UpdateChargeDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "companyId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "productId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dueDate": {},
+          "amount": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "description": {
+            "type": "string"
+          },
+          "paymentMethodOption": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["CREDIT_CARD", "DEBIT_CARD", "BOLETO", "PIX"],
+                  "x-enumNames": ["CREDIT_CARD", "DEBIT_CARD", "BOLETO", "PIX"]
+                },
+                "active": {
+                  "type": "boolean"
+                },
+                "installments": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "installment": {
+                        "type": "number"
+                      },
+                      "totalAmount": {
+                        "type": "number"
+                      },
+                      "installmentAmount": {
+                        "type": "number"
+                      },
+                      "fee": {
+                        "type": "number"
+                      }
+                    },
+                    "required": ["installment"]
+                  }
+                }
+              },
+              "required": ["type"]
+            }
+          }
+        },
+        "required": ["_id"]
+      },
+      "MarkChargeAsPaidDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["companyId", "_id"]
+      },
+      "UpdateResolvedDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string"
+          },
+          "alertId": {
+            "type": "string"
+          }
+        },
+        "required": ["companyId", "alertId"]
+      },
+      "RetryRefundDto": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string"
+          }
+        },
+        "required": ["companyId"]
+      }
+    }
+  }
+}
