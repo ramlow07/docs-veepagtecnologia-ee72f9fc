@@ -54,7 +54,7 @@ O acesso a `companyId` e `companyIds` é validado contra as empresas disponívei
 Se a credencial não tiver acesso à empresa solicitada, a API retorna `403`. Quando isso acontecer, confira se o `companyId` pertence à conta correta e se a credencial tem permissão para aquele recurso.
 
 <Note>
-  O CORS aceita headers como `Authorization`, `X-API-Key` e `X-Token`, mas a leitura desses headers pelo guard de autenticação não foi confirmada na codebase analisada. Para evitar surpresas, use `apiKey` ou `token`.
+  O CORS aceita headers como `Authorization`, `X-API-Key` e `X-Token`, mas o guard de autenticação da API pública lê `apiKey` e `token`. Para evitar falhas de autenticação, use esses headers.
 </Note>
 
 ## Exceção: pagamento de cobrança
