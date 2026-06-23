@@ -50,7 +50,7 @@ O payload de transação pode incluir dados relacionados como `subscription`, `p
 - Consulte a API quando precisar confirmar o estado final de um recurso.
 
 <Warning>
-  Assinatura HMAC, verificação de webhook e política de retry não foram confirmadas na codebase analisada. O envio confirmado é um POST JSON; erros de entrega são logados.
+  O provider atual envia um POST JSON simples para a URL configurada. Não há assinatura HMAC, verificação de webhook ou política de retry implementada nesse envio; erros de entrega são logados.
 </Warning>
 
 <Note>
