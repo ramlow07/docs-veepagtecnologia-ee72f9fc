@@ -1,13 +1,15 @@
 ---
-title: "Transacoes"
-description: "Como criar, consultar, capturar, cancelar e exportar transacoes."
+title: "Transações"
+description: "Como criar, consultar, capturar, cancelar e exportar transações."
 ---
 
-Use transacoes para pagamentos avulsos com cartao, consultas operacionais, captura de autorizacoes e cancelamentos.
+Transações representam pagamentos avulsos processados pela Veepag. Use este fluxo quando você precisa cobrar um cliente diretamente, consultar o histórico de pagamentos, capturar uma autorização ou cancelar/estornar uma operação.
 
-## Criar uma transacao
+## Criar uma transação
 
-`POST /v1/transaction` cria uma transacao avulsa. Para cartao, envie `paymentProfile` com numero, validade e nome do portador.
+`POST /v1/transaction` cria uma transação avulsa. Para pagamento com cartão, envie os dados em `paymentProfile`: número, validade, nome do portador e, quando necessário, CVV.
+
+No exemplo abaixo, criamos uma transação no sandbox com um cliente informado no próprio payload.
 
 ```bash
 curl --request POST 'https://sandbox.api.veepag.com/v1/transaction' \
@@ -21,35 +23,37 @@ curl --request POST 'https://sandbox.api.veepag.com/v1/transaction' \
     "paymentProfile": {
       "cardNumber": "4111111111111111",
       "cardExpiration": "10/2026",
-      "holderName": "CLIENTE TESTE",
+      "holderName": "MARIA SILVA",
       "cardCvv": "123"
     },
     "client": {
-      "name": "Cliente Teste",
+      "name": "Maria Silva",
       "doc": "12345678909",
-      "email": "cliente@example.com"
+      "email": "maria.silva@example.com"
     }
   }'
 ```
 
 <Note>
-  O audit confirmou validacoes de cartao e cliente, mas deixou a unidade monetaria de `amount` em transacoes como lacuna. Confirme se sua credencial espera centavos ou reais antes de usar em producao.
+  A codebase confirmou validações de cartão e cliente, mas a unidade monetária de `amount` em transações ficou como lacuna. Antes de usar em produção, confirme com o time Veepag se sua credencial espera valores em centavos ou reais.
 </Note>
 
-## Consultar transacoes
+## Consultar transações
 
-`GET /v1/transaction` retorna um objeto paginado. Use `rangeTime` com `sort.property` para filtros temporais.
+`GET /v1/transaction` retorna um objeto paginado. Ele é indicado para telas administrativas, conciliação e buscas operacionais.
+
+Use `rangeTime` com `sort.property` para filtros temporais. Isso deixa a consulta mais clara e ajuda a evitar buscas amplas demais.
 
 ```bash
 curl --request GET 'https://sandbox.api.veepag.com/v1/transaction?page=1&limit=20&sort.property=createdAt&sort.order=desc' \
   --header 'apiKey: keyId.secret'
 ```
 
-`GET /v2/transaction` retorna um array direto, sem paginacao. Ele exige `companyId` e um filtro por periodo de ate 7 dias ou um identificador (`id` ou `tid`).
+`GET /v2/transaction` retorna um array direto, sem paginação. Ele exige `companyId` e um filtro por período de até 7 dias ou um identificador (`id` ou `tid`).
 
-## Capturar uma autorizacao
+## Capturar uma autorização
 
-`POST /v1/transaction/capture` captura uma transacao previamente autorizada.
+`POST /v1/transaction/capture` captura uma transação previamente autorizada. Use esse endpoint quando o pagamento foi autorizado antes, mas a captura ficou para uma etapa posterior.
 
 ```json
 {
@@ -58,11 +62,11 @@ curl --request GET 'https://sandbox.api.veepag.com/v1/transaction?page=1&limit=2
 }
 ```
 
-Tambem e aceito `tid`. Pelo menos um identificador e necessario em runtime.
+Também é aceito `tid`. Pelo menos um identificador é necessário em runtime.
 
-## Cancelar uma transacao
+## Cancelar uma transação
 
-`PUT /v1/transaction/cancel` cancela ou estorna uma transacao.
+`PUT /v1/transaction/cancel` cancela ou estorna uma transação.
 
 ```json
 {
@@ -72,8 +76,12 @@ Tambem e aceito `tid`. Pelo menos um identificador e necessario em runtime.
 }
 ```
 
-Se `cancelSubscription` for `true`, a assinatura vinculada tambem pode ser cancelada.
+Se `cancelSubscription` for `true`, a assinatura vinculada também pode ser cancelada. Use essa opção com cuidado quando a transação fizer parte de uma recorrência.
 
-## Exportar transacoes
+## Exportar transações
 
-`GET /v1/transaction/exports` exporta ate 10.000 itens. Se o filtro exceder esse limite, reduza o periodo ou os filtros.
+`GET /v1/transaction/exports` exporta até 10.000 itens. Se o filtro exceder esse limite, reduza o período ou refine os filtros.
+
+<Tip>
+  Para exportações grandes, prefira períodos menores. Isso melhora o tempo de resposta e facilita conferir os dados depois.
+</Tip>
