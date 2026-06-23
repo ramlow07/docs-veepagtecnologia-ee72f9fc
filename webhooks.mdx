@@ -3,11 +3,13 @@ title: "Webhooks"
 description: "Eventos enviados pela Veepag para a URL configurada na empresa."
 ---
 
-A Veepag pode enviar eventos outbound para a URL configurada em `company.setting.webhook`.
+Webhooks ajudam sua aplicação a acompanhar mudanças importantes sem precisar consultar a API o tempo todo.
 
-| Configuracao | Descricao |
+Quando um evento relevante acontece, a Veepag pode enviar um `POST` para a URL configurada em `company.setting.webhook`. Assim, seu sistema pode reagir a atualizações de transações, assinaturas e cobranças com mais agilidade.
+
+| Configuração | Descrição |
 | --- | --- |
-| `active` | Indica se o webhook esta ativo. |
+| `active` | Indica se o webhook está ativo. |
 | `url` | URL que recebe os eventos por HTTP POST. |
 
 ## Eventos confirmados
@@ -21,7 +23,7 @@ A Veepag pode enviar eventos outbound para a URL configurada em `company.setting
 | `charge.created` | `{ "type": "charge.created", "charge": { ... } }` |
 | `charge.update` | `{ "type": "charge.update", "charge": { ... } }` |
 
-O payload de transacao pode incluir dados relacionados como `subscription`, `product`, `client` e `charge`, quando disponiveis.
+O payload de transação pode incluir dados relacionados como `subscription`, `product`, `client` e `charge`, quando disponíveis.
 
 ## Exemplo de payload
 
@@ -40,6 +42,17 @@ O payload de transacao pode incluir dados relacionados como `subscription`, `pro
 }
 ```
 
+## Boas práticas
+
+- Responda rapidamente com status `2xx` quando receber o evento.
+- Registre o `type` e o identificador do recurso recebido.
+- Trate eventos de forma idempotente sempre que possível.
+- Consulte a API quando precisar confirmar o estado final de um recurso.
+
 <Warning>
-  Assinatura HMAC, verificacao de webhook e politica de retry nao foram confirmadas na codebase analisada. O envio confirmado e um POST JSON; erros de entrega sao logados.
+  Assinatura HMAC, verificação de webhook e política de retry não foram confirmadas na codebase analisada. O envio confirmado é um POST JSON; erros de entrega são logados.
 </Warning>
+
+<Note>
+  Se você estiver configurando webhooks pela primeira vez, recomendamos começar pelo sandbox e registrar os payloads recebidos. Isso facilita validar o fluxo com calma antes da homologação.
+</Note>
