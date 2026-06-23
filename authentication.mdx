@@ -1,20 +1,24 @@
 ---
-title: "Autenticacao"
+title: "Autenticação"
 description: "Como autenticar chamadas na API Veepag usando apiKey ou token."
 ---
 
-A maior parte dos endpoints publicos exige autenticacao por header. Envie um dos headers abaixo em cada requisicao.
+Para proteger sua operação e os dados dos seus clientes, a maior parte dos endpoints públicos da Veepag exige autenticação por header.
 
-| Header | Obrigatorio | Formato | Uso |
+Você pode autenticar suas chamadas com `apiKey` ou `token`. Use a opção combinada com o time Veepag durante a configuração da sua integração.
+
+| Header | Obrigatório | Formato | Uso |
 | --- | --- | --- | --- |
-| `apiKey` | Sim, se `token` nao for enviado | `keyId.secret` | API key de integracao. |
-| `token` | Sim, se `apiKey` nao for enviado | JWT | Token com validade confirmada de 14 dias. |
+| `apiKey` | Sim, se `token` não for enviado | `keyId.secret` | API key da integração. |
+| `token` | Sim, se `apiKey` não for enviado | JWT | Token com validade confirmada de 14 dias. |
 
 <Warning>
-  Envie apenas credenciais do ambiente correspondente. Credenciais de sandbox devem ser usadas com `https://sandbox.api.veepag.com/`; credenciais de producao devem ser usadas com `https://api.veepag.com/`.
+  Use sempre a credencial do ambiente correto. Credenciais de sandbox devem ser usadas com `https://sandbox.api.veepag.com/`; credenciais de produção devem ser usadas com `https://api.veepag.com/`.
 </Warning>
 
 ## Exemplo com API key
+
+Este é o formato mais comum para integrações servidor-servidor.
 
 ```bash
 curl --request GET 'https://sandbox.api.veepag.com/v1/transaction?page=1&limit=20' \
@@ -23,32 +27,38 @@ curl --request GET 'https://sandbox.api.veepag.com/v1/transaction?page=1&limit=2
 
 ## Exemplo com token
 
+Se sua integração recebeu um `token`, envie-o no header `token`.
+
 ```bash
 curl --request GET 'https://sandbox.api.veepag.com/v1/client?page=1&limit=20' \
   --header 'token: eyJhbGciOi...'
 ```
 
-## Permissoes
+## Permissões
 
-As credenciais sao avaliadas junto com permissoes de acesso por recurso.
+Além de autenticar a chamada, a Veepag valida se a credencial tem permissão para acessar o recurso solicitado. Isso ajuda a manter cada integração restrita ao que ela realmente precisa fazer.
 
 | Recurso | Leitura | Escrita |
 | --- | --- | --- |
-| Transacoes | `transaction.read` | `transaction.write` |
+| Transações | `transaction.read` | `transaction.write` |
 | Clientes | `client.read` | `client.write` |
 | Assinaturas | `subscription.read` | `subscription.write` |
 | Produtos | `product.read` | `product.write` |
-| Cobrancas | `charge.read` | `charge.write` |
+| Cobranças | `charge.read` | `charge.write` |
 | Alertas | `alert.read` | `alert.write` |
 
 ## Escopo de empresa
 
-O acesso a `companyId` e `companyIds` e validado contra as empresas disponiveis para a credencial. Quando a credencial nao tem acesso a empresa solicitada, a API retorna `403`.
+O acesso a `companyId` e `companyIds` é validado contra as empresas disponíveis para a credencial.
+
+Se a credencial não tiver acesso à empresa solicitada, a API retorna `403`. Quando isso acontecer, confira se o `companyId` pertence à conta correta e se a credencial tem permissão para aquele recurso.
 
 <Note>
-  O CORS aceita headers como `Authorization`, `X-API-Key` e `X-Token`, mas a leitura desses headers pelo guard de autenticacao nao foi confirmada. Use `apiKey` ou `token`.
+  O CORS aceita headers como `Authorization`, `X-API-Key` e `X-Token`, mas a leitura desses headers pelo guard de autenticação não foi confirmada na codebase analisada. Para evitar surpresas, use `apiKey` ou `token`.
 </Note>
 
-## Excecao: pagamento de cobranca
+## Exceção: pagamento de cobrança
 
-`POST /v1/charge/pay` usa autenticacao por reCAPTCHA (`AuthByCaptchaGuard`) e nao segue o mesmo fluxo de `apiKey` ou `token`.
+`POST /v1/charge/pay` usa autenticação por reCAPTCHA (`AuthByCaptchaGuard`) e não segue o mesmo fluxo de `apiKey` ou `token`.
+
+Esse endpoint está mais próximo de um fluxo de checkout/pagamento do que de uma chamada tradicional de API key.
