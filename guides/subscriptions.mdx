@@ -3,22 +3,24 @@ title: "Assinaturas"
 description: "Como criar, consultar, atualizar e cancelar assinaturas na API Veepag."
 ---
 
-Assinaturas representam recorrencias vinculadas a um cliente e produto.
+Assinaturas representam recorrências vinculadas a um cliente e a um produto. Use esse fluxo quando sua operação precisa cobrar o cliente de forma recorrente, com regras de produto, vencimento e pagamento associadas.
+
+Na Veepag, existem dois caminhos principais para criar assinaturas. A versão v1 cria a assinatura e já tenta o pagamento; a versão v2 cria a assinatura e a cobrança, mas deixa o pagamento para outro momento.
 
 ## Criar assinatura v1
 
-`POST /v1/subscription` cria a assinatura, gera a cobranca e tenta o pagamento imediato.
+`POST /v1/subscription` cria a assinatura, gera a cobrança e tenta o pagamento imediato. Esse fluxo é útil quando você já tem os dados necessários para iniciar a recorrência e cobrar o cliente no mesmo momento.
 
-Campos obrigatorios confirmados:
+Campos obrigatórios confirmados:
 
 | Campo | Regra |
 | --- | --- |
-| `companyId` | String obrigatoria. |
+| `companyId` | String obrigatória. |
 | `product.id` | ID do produto. |
 | `paymentMethod` | Enum `CREDIT_CARD`, `DEBIT_CARD`, `BOLETO` ou `PIX`. |
-| `paymentProfile` | Obrigatorio para `CREDIT_CARD`: `holderName`, `cardNumber`, `cardExpiration`. |
-| `client.name` | Obrigatorio quando `client` e enviado. |
-| `client.doc` ou `client.cpf` | CPF/CNPJ valido. |
+| `paymentProfile` | Obrigatório para `CREDIT_CARD`: `holderName`, `cardNumber`, `cardExpiration`. |
+| `client.name` | Obrigatório quando `client` é enviado. |
+| `client.doc` ou `client.cpf` | CPF/CNPJ válido. |
 
 ```bash
 curl --request POST 'https://sandbox.api.veepag.com/v1/subscription' \
@@ -30,12 +32,12 @@ curl --request POST 'https://sandbox.api.veepag.com/v1/subscription' \
     "paymentMethod": "CREDIT_CARD",
     "installments": 1,
     "client": {
-      "name": "Cliente Teste",
+      "name": "Maria Silva",
       "doc": "12345678909",
-      "email": "cliente@example.com"
+      "email": "maria.silva@example.com"
     },
     "paymentProfile": {
-      "holderName": "CLIENTE TESTE",
+      "holderName": "MARIA SILVA",
       "cardNumber": "4111111111111111",
       "cardExpiration": "10/2026",
       "cardCvv": "123"
@@ -46,22 +48,26 @@ curl --request POST 'https://sandbox.api.veepag.com/v1/subscription' \
   }'
 ```
 
+<Tip>
+  Use `metadata` para guardar identificadores da sua aplicação, como pedido, contrato ou plano interno. Isso facilita conciliação e suporte depois.
+</Tip>
+
 ## Criar assinatura v2
 
-`POST /v2/subscription` cria a assinatura e a cobranca, mas nao tenta o pagamento imediato.
+`POST /v2/subscription` cria a assinatura e a cobrança, mas não tenta o pagamento imediato. Esse caminho é melhor quando o cliente já existe na Veepag e você quer controlar o momento do pagamento separadamente.
 
-Principais diferencas:
+Principais diferenças:
 
 | v1 | v2 |
 | --- | --- |
 | Cliente inline em `client` | Cliente existente em `clientId` |
 | Produto em `product.id` | Produto em `productId` |
 | Pagamento imediato | Cria subscription + charge sem pagamento |
-| `dueDate` nao confirmado no DTO | `dueDate` obrigatorio |
+| `dueDate` não confirmado no DTO | `dueDate` obrigatório |
 
 ## Cancelar assinatura
 
-`PUT /v1/subscription/cancel` cancela uma assinatura.
+`PUT /v1/subscription/cancel` cancela uma assinatura. Use esse endpoint quando o cliente encerrou a recorrência ou quando sua operação precisa interromper cobranças futuras.
 
 ```json
 {
@@ -79,10 +85,14 @@ Resposta confirmada:
 }
 ```
 
-## Criacao em lote
+## Criação em lote
 
-`POST /v1/subscription/list` recebe `companyId` e `list`. O processamento e assincrono por fila, com blocos de 3.000 itens e delay de 15 minutos entre blocos.
+`POST /v1/subscription/list` recebe `companyId` e `list`. O processamento é assíncrono por fila, com blocos de 3.000 itens e delay de 15 minutos entre blocos.
 
 <Warning>
-  O schema dos itens de `list` nao esta tipado na codebase (`z.any()`). Confirme o layout esperado antes de usar esse endpoint em producao.
+  O schema dos itens de `list` não está tipado na codebase (`z.any()`). Antes de usar esse endpoint em produção, confirme o layout esperado com o time Veepag.
 </Warning>
+
+<Note>
+  Para lotes grandes, recomendamos validar primeiro com uma amostra pequena no sandbox. Assim você confirma o formato dos dados e evita retrabalho em massa.
+</Note>
