@@ -1,47 +1,57 @@
 ---
-title: "Introducao"
-description: "Visao geral da API Veepag, ambientes, autenticacao e principais recursos."
+title: "Introdução"
+description: "Boas-vindas à API Veepag, com uma visão geral dos ambientes, recursos e primeiros passos."
 ---
 
-A API Veepag permite criar e consultar transacoes, clientes, assinaturas, produtos, cobrancas e alertas de contestacao.
+Bem-vindo à API Veepag! 💚
 
-Use esta documentacao junto com a API Reference para implementar integracoes no ambiente de sandbox e, depois da homologacao, operar em producao.
+Ficamos felizes em ter você por aqui. Esta documentação foi criada para ajudar sua equipe a integrar com a Veepag com segurança, clareza e tranquilidade, desde os primeiros testes no sandbox até o uso em produção.
+
+Com a API Veepag, você pode criar e consultar transações, clientes, assinaturas, produtos, cobranças e alertas de contestação. Ao longo do caminho, vamos explicar não só quais endpoints existem, mas também quando usar cada recurso e quais cuidados tomar em cada etapa.
 
 ## Ambientes
 
 | Ambiente | Base URL |
 | --- | --- |
 | Sandbox | `https://sandbox.api.veepag.com/` |
-| Producao | `https://api.veepag.com/` |
+| Produção | `https://api.veepag.com/` |
+
+Use o sandbox para testar sua integração, validar fluxos e simular chamadas sem impacto em produção. Depois que tudo estiver funcionando como esperado, solicite a homologação para que sua aplicação seja aprovada para operar no ambiente produtivo.
 
 ## Recursos principais
 
 | Recurso | Quando usar |
 | --- | --- |
-| Transacoes | Criar pagamentos avulsos, capturar autorizacoes, cancelar/estornar e exportar transacoes. |
+| Transações | Criar pagamentos avulsos, capturar autorizações, cancelar/estornar e exportar transações. |
 | Clientes | Cadastrar, atualizar e consultar dados de clientes. |
-| Assinaturas | Criar recorrencias, trocar produto, cancelar e consultar cobrancas futuras. |
-| Produtos | Configurar preco, metodos de pagamento e regras de cobranca usadas por assinaturas e cobrancas. |
-| Cobrancas | Criar uma cobranca para um cliente e produto, pagar, cancelar ou marcar como paga. |
-| Alertas | Consultar alertas Ethoca/Visa e atualizar resolucoes. |
+| Assinaturas | Criar recorrências, trocar produto, cancelar e consultar cobranças futuras. |
+| Produtos | Configurar preço, métodos de pagamento e regras de cobrança usadas por assinaturas e cobranças. |
+| Cobranças | Criar uma cobrança para um cliente e produto, pagar, cancelar ou marcar como paga. |
+| Alertas | Consultar alertas Ethoca/Visa e atualizar resoluções. |
 
 ## Antes de integrar
 
 <Steps>
   <Step title="Solicite suas credenciais">
-    Solicite uma `apiKey` ou `token` para acessar o ambiente de sandbox.
+    Para começar, solicite uma `apiKey` ou um `token` de autorização. Com essa credencial, você consegue acessar o ambiente de sandbox e iniciar seus testes.
   </Step>
   <Step title="Use o sandbox">
-    Implemente e valide seus fluxos usando `https://sandbox.api.veepag.com/`.
+    Implemente seus primeiros fluxos em `https://sandbox.api.veepag.com/`. Esse é o espaço ideal para testar com calma, revisar respostas e ajustar sua integração.
   </Step>
-  <Step title="Homologue a integracao">
-    Depois dos testes, solicite a homologacao para habilitar o uso em producao.
+  <Step title="Homologue a integração">
+    Quando os testes estiverem concluídos, solicite a homologação. Essa etapa ajuda a garantir que sua aplicação está pronta para operar com segurança.
   </Step>
-  <Step title="Aponte para producao">
-    Troque a base URL para `https://api.veepag.com/` quando a integracao estiver aprovada.
+  <Step title="Aponte para produção">
+    Depois da aprovação, troque a base URL para `https://api.veepag.com/` e use suas credenciais de produção.
   </Step>
 </Steps>
 
+## Conte com a gente
+
+Sabemos que integrações de pagamento pedem atenção aos detalhes. Por isso, esta documentação traz exemplos, respostas esperadas, erros comuns e observações sobre comportamentos que precisam de cuidado.
+
+Se alguma etapa não ficar clara ou se você precisar validar um fluxo específico, fale com o time Veepag. Estamos aqui para ajudar sua integração a sair do papel com confiança.
+
 <Note>
-  Esta documentacao foi enriquecida a partir da codebase publica analisada em 2026-06-23. Quando um comportamento nao esta confirmado no codigo, ele aparece explicitamente como nao confirmado.
+  Esta documentação foi enriquecida a partir da codebase analisada em 23 de junho de 2026. Quando um comportamento não está confirmado no código, ele aparece explicitamente como não confirmado.
 </Note>
