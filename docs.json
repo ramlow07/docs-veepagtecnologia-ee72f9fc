@@ -4,7 +4,7 @@
   "name": "Veepag",
   "description": "Documentacao da API Veepag para pagamentos e transacoes.",
   "colors": {
-    "primary": "#111827"
+    "primary": "#00cf07"
   },
   "api": {
     "openapi": "api-reference/openapi.json",
@@ -37,5 +37,14 @@
         "openapi": "api-reference/openapi.json"
       }
     ]
+  },
+  "logo": {
+    "light": "/images/veepag-logo-2.png",
+    "dark": "/images/veepag-logo-2.png",
+    "href": "https://veepag.com"
+  },
+  "favicon": {
+    "light": "/images/icon.png",
+    "dark": "/images/icon.png"
   }
 }
