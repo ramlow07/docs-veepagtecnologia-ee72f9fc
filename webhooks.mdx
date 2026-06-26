@@ -5,7 +5,7 @@ description: "Eventos enviados pela Veepag para a URL configurada na empresa."
 
 Webhooks ajudam sua aplicação a acompanhar mudanças importantes sem precisar consultar a API o tempo todo.
 
-Quando um evento relevante acontece, a Veepag pode enviar um `POST` para a URL configurada em `company.setting.webhook`. Assim, seu sistema pode reagir a atualizações de transações, assinaturas e cobranças com mais agilidade.
+Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configurada em `company.setting.webhook`. Assim, seu sistema pode reagir a atualizações de transações, assinaturas e cobranças com mais agilidade.
 
 | Configuração | Descrição |
 | --- | --- |
@@ -14,7 +14,7 @@ Quando um evento relevante acontece, a Veepag pode enviar um `POST` para a URL c
 
 ## Eventos confirmados
 
-| Evento | Payload |
+| Evento | Payload enviado hoje |
 | --- | --- |
 | `transaction.created` | `{ "type": "transaction.created", "transaction": { ... } }` |
 | `transaction.update` | `{ "type": "transaction.update", "transaction": { ... } }` |
@@ -23,24 +23,369 @@ Quando um evento relevante acontece, a Veepag pode enviar um `POST` para a URL c
 | `charge.created` | `{ "type": "charge.created", "charge": { ... } }` |
 | `charge.update` | `{ "type": "charge.update", "charge": { ... } }` |
 
-O payload de transação pode incluir dados relacionados como `subscription`, `product`, `client` e `charge`, quando disponíveis.
+<Note>
+  O payload de `transaction.created` pode trazer `subscription`, `product` e `client` dentro de `transaction`, quando esses dados estiverem disponíveis no fluxo de criação. No envio atual confirmado em código, `transaction.update` envia os campos base da transação. O objeto `charge` não é enviado dentro de `transaction` hoje.
+</Note>
 
-## Exemplo de payload
+## Transaction webhook
+
+### `transaction.created`
 
 ```json
 {
   "type": "transaction.created",
   "transaction": {
     "_id": "transaction_id",
+    "acquirer": {
+      "id": "integration_id",
+      "integrationId": "integration_config_id",
+      "name": "Nome do adquirente",
+      "orderId": "order_id",
+      "tid": "tid",
+      "paymentId": "payment_id"
+    },
+    "amount": {
+      "currency": "BRL",
+      "value": 9900
+    },
+    "boleto": null,
+    "card": {
+      "firstDigits": "411111",
+      "lastDigits": "1111",
+      "brand": "visa",
+      "holderName": "Cliente Veepag",
+      "expiry": "12/2030"
+    },
+    "chargeId": "charge_id",
+    "clientId": "client_id",
+    "code": null,
     "companyId": "company_id",
-    "status": "PAID",
-    "amount": 9900,
-    "paymentMethod": "CREDIT_CARD",
     "createdAt": "2026-06-23T12:00:00.000Z",
-    "lastUpdate": "2026-06-23T12:00:03.000Z"
+    "feeDetails": null,
+    "fees": null,
+    "history": [
+      {
+        "date": "2026-06-23T12:00:00.000Z",
+        "message": "Transação criada",
+        "status": "PROCESSING"
+      }
+    ],
+    "installments": 1,
+    "lastUpdate": "2026-06-23T12:00:03.000Z",
+    "message": "Pagamento aprovado",
+    "message2": null,
+    "paymentMethod": "CREDIT_CARD",
+    "paymentMethodId": "payment_method_id",
+    "paymentMethodOption": null,
+    "previousData": null,
+    "productId": "product_id",
+    "qrCode": null,
+    "status": "PAID",
+    "subscriptionId": "subscription_id",
+    "affiliateId": "affiliate_id",
+    "metadata": {
+      "externalId": "pedido-123"
+    },
+    "subscription": {
+      "_id": "subscription_id"
+    },
+    "product": {
+      "_id": "product_id"
+    },
+    "client": {
+      "_id": "client_id"
+    }
   }
 }
 ```
+
+### `transaction.update`
+
+```json
+{
+  "type": "transaction.update",
+  "transaction": {
+    "_id": "transaction_id",
+    "acquirer": {
+      "id": "integration_id",
+      "integrationId": "integration_config_id",
+      "name": "Nome do adquirente",
+      "orderId": "order_id",
+      "tid": "tid",
+      "paymentId": "payment_id"
+    },
+    "amount": {
+      "currency": "BRL",
+      "value": 9900
+    },
+    "chargeId": "charge_id",
+    "clientId": "client_id",
+    "companyId": "company_id",
+    "createdAt": "2026-06-23T12:00:00.000Z",
+    "history": [
+      {
+        "date": "2026-06-23T12:00:03.000Z",
+        "message": "Pagamento aprovado",
+        "status": "PAID"
+      }
+    ],
+    "installments": 1,
+    "lastUpdate": "2026-06-23T12:00:03.000Z",
+    "message": "Pagamento aprovado",
+    "paymentMethod": "CREDIT_CARD",
+    "paymentMethodId": "payment_method_id",
+    "previousData": {
+      "status": "PROCESSING"
+    },
+    "productId": "product_id",
+    "status": "PAID",
+    "subscriptionId": "subscription_id",
+    "metadata": {
+      "externalId": "pedido-123"
+    }
+  }
+}
+```
+
+### Campos de `transaction`
+
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| `_id` | `string` | Identificador da transação. |
+| `acquirer` | `object` | Dados do adquirente: `chargeId`, `id`, `integrationId`, `name`, `orderId`, `authorization`, `tid` e `paymentId`. |
+| `amount` | `object` | Valor da transação: `currency` e `value`. |
+| `boleto` | `object` ou `null` | Dados de boleto: `barcode`, `dueDate`, `url` e `links`. |
+| `card` | `object` ou `null` | Dados do cartão: `firstDigits`, `lastDigits`, `binInfo`, `reversible`, `brand`, `holderName` e `expiry`. |
+| `chargeId` | `string` | Identificador da cobrança vinculada, quando houver. |
+| `clientId` | `string` | Identificador do cliente vinculado. |
+| `code` | `string` ou `null` | Código retornado pelo fluxo de pagamento, quando houver. |
+| `companyId` | `string` | Identificador da empresa. |
+| `createdAt` | `string` | Data de criação em formato ISO. |
+| `feeDetails` | `object` ou `null` | Detalhes de taxas, quando houver. |
+| `fees` | `number` ou `null` | Valor de taxas, quando houver. |
+| `history` | `array` | Histórico da transação. Cada item pode conter `code`, `date`, `message`, `status`, `user`, `integrationId`, `brand` e `acquirer`. |
+| `installments` | `number` ou `object` | Parcelamento da transação. |
+| `lastUpdate` | `string` | Data da última atualização em formato ISO. |
+| `message` | `string` | Mensagem principal do processamento, quando houver. |
+| `message2` | `string` | Mensagem complementar do processamento, quando houver. |
+| `paymentMethod` | `string` | Método de pagamento usado na transação. |
+| `paymentMethodId` | `string` | Identificador do meio de pagamento. |
+| `paymentMethodOption` | `array` ou `null` | Opções de método de pagamento, quando houver. |
+| `previousData` | `object` ou `null` | Estado anterior da transação. Hoje contém `status`. |
+| `productId` | `string` | Identificador do produto vinculado. |
+| `qrCode` | `object` ou `null` | Dados de Pix: `text` e `links`. |
+| `status` | `string` | Status atual da transação. |
+| `subscriptionId` | `string` | Identificador da assinatura vinculada, quando houver. |
+| `affiliateId` | `string` | Identificador do afiliado, quando houver. |
+| `metadata` | `object` | Metadados enviados na criação ou salvos na transação. |
+| `subscription` | `object` | Enviado em `transaction.created` quando a assinatura está disponível no fluxo. |
+| `product` | `object` | Enviado em `transaction.created` quando o produto está disponível no fluxo. |
+| `client` | `object` | Enviado em `transaction.created` quando o cliente está disponível no fluxo. |
+
+## Subscription webhook
+
+```json
+{
+  "type": "subscription.created",
+  "subscription": {
+    "_id": "subscription_id",
+    "active": true,
+    "canceledDate": null,
+    "clientId": "client_id",
+    "companyId": "company_id",
+    "createdAt": "2026-06-23T12:00:00.000Z",
+    "history": [
+      {
+        "date": "2026-06-23T11:59:55.000Z",
+        "message": "Assinatura criada",
+        "status": "CREATED"
+      }
+    ],
+    "installments": 1,
+    "lastUpdate": "2026-06-23T12:00:00.000Z",
+    "metadata": {
+      "externalId": "assinatura-123"
+    },
+    "nextCharge": "2026-07-23T12:00:00.000Z",
+    "origin": "API",
+    "paymentMethod": ["CREDIT_CARD"],
+    "previousData": null,
+    "productId": "product_id",
+    "referenceId": "referencia-do-cliente",
+    "status": "CREATED",
+    "affiliateId": "affiliate_id",
+    "checkoutUrl": "https://checkout.veepag.com/...",
+    "product": {
+      "_id": "product_id"
+    }
+  }
+}
+```
+
+O evento `subscription.update` usa a mesma estrutura, alterando apenas o `type` para `subscription.update` e refletindo os dados atualizados da assinatura.
+
+### Campos de `subscription`
+
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| `_id` | `string` | Identificador da assinatura. |
+| `active` | `boolean` | Indica se a assinatura está ativa. |
+| `canceledDate` | `string` ou `null` | Data de cancelamento, quando houver. |
+| `clientId` | `string` | Identificador do cliente assinante. |
+| `companyId` | `string` | Identificador da empresa. |
+| `createdAt` | `string` | Data de criação em formato ISO. |
+| `history` | `array` | Histórico da assinatura. Cada item pode conter `acquirer`, `brand`, `code`, `date`, `integrationId`, `message`, `status` e `user`. |
+| `installments` | `number` | Quantidade de parcelas configurada. |
+| `lastUpdate` | `string` | Data da última atualização em formato ISO. |
+| `metadata` | `object` | Metadados livres vinculados à assinatura. |
+| `nextCharge` | `string` ou `null` | Próxima data de cobrança, quando houver. |
+| `origin` | `string` | Origem da criação da assinatura. |
+| `paymentMethod` | `array` | Métodos de pagamento disponíveis para a assinatura. |
+| `previousData` | `object` ou `null` | Dados anteriores da assinatura. Pode conter `nextCharge` e `status`. |
+| `productId` | `string` | Identificador do produto vinculado. |
+| `referenceId` | `string` ou `null` | Referência externa enviada pela integração, quando houver. |
+| `status` | `string` | Status atual da assinatura. |
+| `affiliateId` | `string` | Identificador do afiliado, quando houver. |
+| `checkoutUrl` | `string` | URL de checkout, quando houver. |
+| `product` | `object` | Produto vinculado, quando ele já estiver presente na assinatura carregada. |
+
+## Charge webhook
+
+```json
+{
+  "type": "charge.update",
+  "charge": {
+    "_id": "charge_id",
+    "active": true,
+    "amount": {
+      "value": 9900,
+      "currency": "BRL"
+    },
+    "card": {
+      "acquirer": "Nome do adquirente",
+      "brand": "visa",
+      "message": "Pagamento aprovado",
+      "code": "00"
+    },
+    "cardAuth": true,
+    "clientId": "client_id",
+    "companyId": "company_id",
+    "productId": "product_id",
+    "subscriptionId": "subscription_id",
+    "description": "Cobrança da assinatura",
+    "history": [
+      {
+        "status": "PAID",
+        "amount": 9900,
+        "message": "Pagamento aprovado",
+        "date": "2026-06-23T12:00:03.000Z"
+      }
+    ],
+    "installments": {
+      "qty": 1,
+      "installment": 9900,
+      "type": "NO_INTEREST"
+    },
+    "paymentMethod": ["CREDIT_CARD"],
+    "paymentMethodOption": [
+      {
+        "type": "CREDIT_CARD",
+        "active": true,
+        "installments": []
+      }
+    ],
+    "status": "PAID",
+    "previousData": {
+      "status": "PENDING_PAYMENT",
+      "chargeDate": "2026-06-23T12:00:00.000Z"
+    },
+    "number": 1,
+    "dueDate": "2026-06-23T12:00:00.000Z",
+    "lastUpdate": "2026-06-23T12:00:03.000Z",
+    "chargeDate": "2026-06-23T12:00:00.000Z",
+    "createdAt": "2026-06-23T12:00:00.000Z"
+  }
+}
+```
+
+O evento `charge.created` usa a mesma estrutura, alterando apenas o `type` para `charge.created` e refletindo os dados da cobrança criada.
+
+### Campos de `charge`
+
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| `_id` | `string` | Identificador da cobrança. |
+| `active` | `boolean` | Indica se a cobrança está ativa. |
+| `amount` | `object` | Valor da cobrança: `value` e `currency`. |
+| `card` | `object` ou `null` | Resultado de cartão: `acquirer`, `brand`, `message` e `code`. |
+| `cardAuth` | `boolean` ou `null` | Indica se a cobrança usa autorização de cartão. |
+| `clientId` | `string` | Identificador do cliente. |
+| `companyId` | `string` | Identificador da empresa. |
+| `productId` | `string` | Identificador do produto. |
+| `subscriptionId` | `string` ou `null` | Identificador da assinatura vinculada, quando houver. |
+| `description` | `string` ou `null` | Descrição da cobrança. |
+| `history` | `array` | Histórico da cobrança. Cada item pode conter `status`, `amount`, `message`, `date` e `user`. |
+| `installments` | `object` ou `null` | Parcelamento: `qty`, `installment` e `type`. |
+| `paymentMethod` | `array` ou `null` | Métodos de pagamento disponíveis para a cobrança. |
+| `paymentMethodOption` | `array` ou `null` | Opções de pagamento, com `type`, `active` e `installments`. |
+| `status` | `string` | Status atual da cobrança. |
+| `previousData` | `object` ou `null` | Dados anteriores da cobrança. Hoje pode conter `status` e `chargeDate`. |
+| `number` | `number` | Número sequencial da cobrança, quando houver. |
+| `dueDate` | `string` | Data de vencimento em formato ISO. |
+| `lastUpdate` | `string` | Data da última atualização em formato ISO. |
+| `chargeDate` | `string` ou `null` | Data de cobrança, quando houver. |
+| `createdAt` | `string` | Data de criação em formato ISO. |
+
+## Objetos relacionados
+
+### `client`
+
+O objeto `client` é enviado hoje dentro de `transaction.created` quando o cliente está disponível no fluxo de criação.
+
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| `_id` | `string` | Identificador do cliente. |
+| `active` | `boolean` | Indica se o cliente está ativo. |
+| `address` | `object` ou `null` | Endereço: `additionalDetails`, `city`, `complement`, `country`, `neighborhood`, `number`, `state`, `street` e `zipcode`. |
+| `birth` | `string` ou `null` | Data de nascimento, quando houver. |
+| `charges` | `object` ou `null` | Informações de cobranças associadas, quando houver. |
+| `companyId` | `string` | Identificador da empresa. |
+| `cpf` | `string` ou `null` | CPF, quando houver. |
+| `createdAt` | `string` | Data de criação em formato ISO. |
+| `deleted` | `boolean` ou `null` | Indica exclusão lógica, quando preenchido. |
+| `device` | `object` ou `null` | Dados do dispositivo: `colorDepth`, `javaEnable`, `language`, `screenHeight`, `screenWidth`, `timezoneOffset`, `userAgent` e `javaEnabled`. |
+| `doc` | `string` ou `null` | Documento do cliente. |
+| `email` | `string` ou `null` | E-mail do cliente. |
+| `gender` | `string` ou `null` | Gênero, quando houver. |
+| `ipAddress` | `string` ou `null` | IP do cliente, quando houver. |
+| `lastUpdate` | `string` ou `null` | Data da última atualização em formato ISO. |
+| `name` | `string` ou `null` | Nome do cliente. |
+| `note` | `string` ou `null` | Observação interna, quando houver. |
+| `phone` | `array` ou `null` | Telefones do cliente. |
+| `referenceId` | `any` | Referência externa, quando houver. |
+| `status` | `string` ou `null` | Status do cliente. |
+| `type` | `string` ou `null` | Tipo do cliente. |
+
+### `product`
+
+O objeto `product` é enviado hoje dentro de `transaction.created` quando o produto está disponível no fluxo de criação.
+
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| `_id` | `string` | Identificador do produto. |
+| `active` | `boolean` | Indica se o produto está ativo. |
+| `charge` | `object` | Configurações de cobrança do produto. |
+| `checkout` | `object` ou `null` | Configurações de checkout, quando houver. |
+| `companyId` | `string` | Identificador da empresa. |
+| `createdAt` | `string` ou `null` | Data de criação em formato ISO. |
+| `deleted` | `boolean` | Indica exclusão lógica. |
+| `discount` | `object` ou `null` | Configurações de desconto, quando houver. |
+| `notification` | `object` ou `null` | Configurações de notificação, quando houver. |
+| `product` | `object` | Dados comerciais do produto. |
+| `send` | `object` ou `null` | Configurações de envio, quando houver. |
+| `setting` | `object` | Configurações gerais do produto. |
+| `split` | `object` | Configuração de split, quando houver. |
+| `unsubscription` | `object` ou `null` | Configurações de cancelamento, quando houver. |
 
 ## Boas práticas
 
