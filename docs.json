@@ -20,6 +20,7 @@
           "introduction",
           "quickstart",
           "authentication",
+          "testing",
           "errors",
           "webhooks"
         ]

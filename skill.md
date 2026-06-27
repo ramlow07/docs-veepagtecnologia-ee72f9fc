@@ -40,6 +40,23 @@ Do not use `Authorization`, `X-API-Key`, or `X-Token` for public API authenticat
 
 `POST /v1/charge/pay` is an exception: it uses a captcha guard and does not use `apiKey` or `token`.
 
+## Testing
+
+Use sandbox credentials when testing payment flows.
+
+Successful test cards:
+
+- `4539003370725497`: Visa
+- `4716588836362104`: Visa Credito
+- `5356066320271893`: Mastercard
+- `5201561050024014`: Mastercard
+
+Declined test cards:
+
+- `6011457819940087`: declined as invalid card.
+- `4929710426637678`: declined as expired card.
+- `4710426743216178`: declined as issuer unavailable.
+
 ## Permissions
 
 Credentials are scoped by company access and resource permissions:

@@ -1,0 +1,47 @@
+---
+title: "Testando"
+description: "Cartões de teste e orientações para validar sua integração no ambiente sandbox."
+---
+
+Antes de ir para produção, recomendamos testar os principais cenários da sua integração no sandbox da Veepag. Assim você consegue validar criação de transações, tratamento de recusas, atualização de status e recebimento de webhooks com mais tranquilidade.
+
+Use os cartões abaixo apenas no ambiente de testes. Além do número do cartão, preencha os demais campos obrigatórios do endpoint, como nome do portador, validade, CVV e dados do cliente, de acordo com o fluxo que você estiver testando.
+
+<Warning>
+  Não use cartões reais durante os testes de integração. Para simular pagamentos, utilize sempre credenciais de sandbox e os cartões de teste informados nesta página.
+</Warning>
+
+## Cartões aprovados
+
+Os cartões abaixo transacionam com sucesso no ambiente de teste.
+
+| Número | Bandeira | Resultado esperado |
+| --- | --- | --- |
+| `4539003370725497` | Visa | Transação aprovada |
+| `4716588836362104` | Visa Crédito | Transação aprovada |
+| `5356066320271893` | Mastercard | Transação aprovada |
+| `5201561050024014` | Mastercard | Transação aprovada |
+
+## Cartões recusados
+
+Use estes cartões para validar se sua aplicação trata recusas corretamente. Esses cenários são importantes para exibir mensagens adequadas ao cliente e manter sua operação preparada para respostas negativas do fluxo de pagamento.
+
+| Número | Resultado esperado |
+| --- | --- |
+| `6011457819940087` | A transação será recusada com código de cartão inválido. |
+| `4929710426637678` | A transação será recusada com código de cartão expirado. |
+| `4710426743216178` | A transação será recusada com código de emissor indisponível. |
+
+## O que validar
+
+Ao testar sua integração, vale conferir com calma:
+
+- Se a autenticação está usando a credencial correta do sandbox.
+- Se sua aplicação salva o identificador da transação retornado pela Veepag.
+- Se os status de sucesso e falha são tratados corretamente.
+- Se sua aplicação registra o motivo da recusa quando a transação não é aprovada.
+- Se os webhooks estão chegando na URL configurada e sendo processados de forma idempotente.
+
+<Note>
+  Se algum cenário de teste não se comportar como esperado, confira primeiro o ambiente usado, a credencial enviada e o payload da requisição. Se ainda ficar em dúvida, fale com o time Veepag para revisarmos juntos.
+</Note>
