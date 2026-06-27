@@ -27,6 +27,10 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
   O payload de `transaction.created` pode trazer `subscription`, `product` e `client` dentro de `transaction`, quando esses dados estiverem disponíveis no fluxo de criação. No envio atual confirmado em código, `transaction.update` envia os campos base da transação. O objeto `charge` não é enviado dentro de `transaction` hoje.
 </Note>
 
+<Note>
+  Campos opcionais podem não aparecer no JSON quando estiverem `undefined`. Nos exemplos abaixo, usamos `null` apenas para representar campos que podem estar salvos explicitamente como nulos.
+</Note>
+
 ## Transaction webhook
 
 ### `transaction.created`
@@ -87,13 +91,95 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
       "externalId": "pedido-123"
     },
     "subscription": {
-      "_id": "subscription_id"
+      "_id": "subscription_id",
+      "active": true,
+      "canceledDate": null,
+      "clientId": "client_id",
+      "companyId": "company_id",
+      "createdAt": "2026-06-23T12:00:00.000Z",
+      "history": [
+        {
+          "date": "2026-06-23T11:59:55.000Z",
+          "message": "Assinatura criada",
+          "status": "CREATED"
+        }
+      ],
+      "installments": 1,
+      "lastUpdate": "2026-06-23T12:00:00.000Z",
+      "metadata": {
+        "externalId": "assinatura-123"
+      },
+      "nextCharge": "2026-07-23T12:00:00.000Z",
+      "origin": "API",
+      "paymentMethod": ["CREDIT_CARD"],
+      "previousData": null,
+      "productId": "product_id",
+      "referenceId": "referencia-do-cliente",
+      "status": "CREATED",
+      "affiliateId": "affiliate_id",
+      "checkoutUrl": "https://checkout.veepag.com/..."
     },
     "product": {
-      "_id": "product_id"
+      "_id": "product_id",
+      "active": true,
+      "charge": {
+        "amount": 9900
+      },
+      "checkout": null,
+      "companyId": "company_id",
+      "createdAt": "2026-06-23T12:00:00.000Z",
+      "deleted": false,
+      "discount": null,
+      "notification": null,
+      "product": {
+        "name": "Assinatura Veepag"
+      },
+      "send": null,
+      "setting": {},
+      "split": {},
+      "unsubscription": null
     },
     "client": {
-      "_id": "client_id"
+      "_id": "client_id",
+      "active": true,
+      "address": {
+        "additionalDetails": null,
+        "city": "São Paulo",
+        "complement": "Apto 101",
+        "country": "BR",
+        "neighborhood": "Centro",
+        "number": "123",
+        "state": "SP",
+        "street": "Rua Exemplo",
+        "zipcode": "01001000"
+      },
+      "birth": "1990-01-01",
+      "charges": null,
+      "companyId": "company_id",
+      "cpf": "12345678909",
+      "createdAt": "2026-06-23T12:00:00.000Z",
+      "deleted": null,
+      "device": {
+        "colorDepth": 24,
+        "javaEnable": false,
+        "language": "pt-BR",
+        "screenHeight": 1080,
+        "screenWidth": 1920,
+        "timezoneOffset": 180,
+        "userAgent": "Mozilla/5.0...",
+        "javaEnabled": false
+      },
+      "doc": "12345678909",
+      "email": "cliente@exemplo.com",
+      "gender": null,
+      "ipAddress": "127.0.0.1",
+      "lastUpdate": "2026-06-23T12:00:00.000Z",
+      "name": "Cliente Veepag",
+      "note": null,
+      "phone": ["11999999999"],
+      "referenceId": "cliente-123",
+      "status": "ACTIVE",
+      "type": "INDIVIDUAL"
     }
   }
 }
@@ -214,15 +300,14 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
     "referenceId": "referencia-do-cliente",
     "status": "CREATED",
     "affiliateId": "affiliate_id",
-    "checkoutUrl": "https://checkout.veepag.com/...",
-    "product": {
-      "_id": "product_id"
-    }
+    "checkoutUrl": "https://checkout.veepag.com/..."
   }
 }
 ```
 
 O evento `subscription.update` usa a mesma estrutura, alterando apenas o `type` para `subscription.update` e refletindo os dados atualizados da assinatura.
+
+No envio atual confirmado, o service de assinatura não carrega `client` nem `product` dentro do objeto `subscription` antes de enviar o webhook.
 
 ### Campos de `subscription`
 
@@ -247,7 +332,6 @@ O evento `subscription.update` usa a mesma estrutura, alterando apenas o `type` 
 | `status` | `string` | Status atual da assinatura. |
 | `affiliateId` | `string` | Identificador do afiliado, quando houver. |
 | `checkoutUrl` | `string` | URL de checkout, quando houver. |
-| `product` | `object` | Produto vinculado, quando ele já estiver presente na assinatura carregada. |
 
 ## Charge webhook
 
