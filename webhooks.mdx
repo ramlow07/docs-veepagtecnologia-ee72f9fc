@@ -297,6 +297,60 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
     "paymentMethod": ["CREDIT_CARD"],
     "previousData": null,
     "productId": "product_id",
+    "client": {
+      "_id": "client_id",
+      "active": true,
+      "address": {
+        "additionalDetails": null,
+        "city": "São Paulo",
+        "complement": "Apto 101",
+        "country": "BR",
+        "neighborhood": "Centro",
+        "number": "123",
+        "state": "SP",
+        "street": "Rua Exemplo",
+        "zipcode": "01001000"
+      },
+      "birth": "1990-01-01",
+      "charges": null,
+      "companyId": "company_id",
+      "cpf": "12345678909",
+      "createdAt": "2026-06-23T12:00:00.000Z",
+      "deleted": null,
+      "device": null,
+      "doc": "12345678909",
+      "email": "cliente@exemplo.com",
+      "gender": null,
+      "ipAddress": "127.0.0.1",
+      "lastUpdate": "2026-06-23T12:00:00.000Z",
+      "name": "Cliente Veepag",
+      "note": null,
+      "phone": ["11999999999"],
+      "referenceId": "cliente-123",
+      "status": "ACTIVE",
+      "type": "INDIVIDUAL"
+    },
+    "product": {
+      "_id": "product_id",
+      "active": true,
+      "charge": {
+        "amount": 9900
+      },
+      "checkout": null,
+      "companyId": "company_id",
+      "createdAt": "2026-06-23T12:00:00.000Z",
+      "deleted": false,
+      "discount": null,
+      "notification": null,
+      "product": {
+        "title": "Seguro Meu+ Residencial",
+        "price": 99.9
+      },
+      "send": null,
+      "setting": {},
+      "split": {},
+      "unsubscription": null
+    },
     "referenceId": "referencia-do-cliente",
     "status": "CREATED",
     "affiliateId": "affiliate_id",
@@ -307,7 +361,7 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
 
 O evento `subscription.update` usa a mesma estrutura, alterando apenas o `type` para `subscription.update` e refletindo os dados atualizados da assinatura.
 
-No envio atual confirmado, o service de assinatura não carrega `client` nem `product` dentro do objeto `subscription` antes de enviar o webhook.
+No evento `subscription.created`, os objetos `client` e `product` são enviados dentro de `subscription` quando disponíveis no fluxo de criação. O objeto `client` traz os dados cadastrais do cliente, incluindo nome, e-mail, documento, telefones e endereço quando cadastrados. O nome comercial do plano fica em `subscription.product.product.title`. O preço do produto fica em `subscription.product.product.price` e segue o formato cadastrado no produto.
 
 ### Campos de `subscription`
 
@@ -328,6 +382,8 @@ No envio atual confirmado, o service de assinatura não carrega `client` nem `pr
 | `paymentMethod` | `array` | Métodos de pagamento disponíveis para a assinatura. |
 | `previousData` | `object` ou `null` | Dados anteriores da assinatura. Pode conter `nextCharge` e `status`. |
 | `productId` | `string` | Identificador do produto vinculado. |
+| `client` | `object` | Cliente vinculado enviado em `subscription.created`, quando disponível no fluxo. |
+| `product` | `object` | Produto vinculado enviado em `subscription.created`, quando disponível no fluxo. O nome comercial fica em `product.product.title` e o preço fica em `product.product.price`, no formato cadastrado no produto. |
 | `referenceId` | `string` ou `null` | Referência externa enviada pela integração, quando houver. |
 | `status` | `string` | Status atual da assinatura. |
 | `affiliateId` | `string` | Identificador do afiliado, quando houver. |
@@ -387,12 +443,47 @@ No envio atual confirmado, o service de assinatura não carrega `client` nem `pr
     "dueDate": "2026-06-23T12:00:00.000Z",
     "lastUpdate": "2026-06-23T12:00:03.000Z",
     "chargeDate": "2026-06-23T12:00:00.000Z",
-    "createdAt": "2026-06-23T12:00:00.000Z"
+    "createdAt": "2026-06-23T12:00:00.000Z",
+    "client": {
+      "_id": "client_id",
+      "active": true,
+      "address": {
+        "additionalDetails": null,
+        "city": "São Paulo",
+        "complement": "Apto 101",
+        "country": "BR",
+        "neighborhood": "Centro",
+        "number": "123",
+        "state": "SP",
+        "street": "Rua Exemplo",
+        "zipcode": "01001000"
+      },
+      "birth": "1990-01-01",
+      "charges": null,
+      "companyId": "company_id",
+      "cpf": "12345678909",
+      "createdAt": "2026-06-23T12:00:00.000Z",
+      "deleted": null,
+      "device": null,
+      "doc": "12345678909",
+      "email": "cliente@exemplo.com",
+      "gender": null,
+      "ipAddress": "127.0.0.1",
+      "lastUpdate": "2026-06-23T12:00:00.000Z",
+      "name": "Cliente Veepag",
+      "note": null,
+      "phone": ["11999999999"],
+      "referenceId": "cliente-123",
+      "status": "ACTIVE",
+      "type": "INDIVIDUAL"
+    }
   }
 }
 ```
 
 O evento `charge.created` usa a mesma estrutura, alterando apenas o `type` para `charge.created` e refletindo os dados da cobrança criada.
+
+No evento `charge.update`, quando a cobrança atualizada fica com status `PAID`, o objeto `client` é enviado dentro de `charge` com os dados cadastrais do cliente, incluindo nome, e-mail e documento quando cadastrados.
 
 ### Campos de `charge`
 
@@ -419,12 +510,13 @@ O evento `charge.created` usa a mesma estrutura, alterando apenas o `type` para 
 | `lastUpdate` | `string` | Data da última atualização em formato ISO. |
 | `chargeDate` | `string` ou `null` | Data de cobrança, quando houver. |
 | `createdAt` | `string` | Data de criação em formato ISO. |
+| `client` | `object` | Cliente vinculado enviado em `charge.update` quando a cobrança fica `PAID`. |
 
 ## Objetos relacionados
 
 ### `client`
 
-O objeto `client` é enviado hoje dentro de `transaction.created` quando o cliente está disponível no fluxo de criação.
+O objeto `client` é enviado dentro de `transaction.created` quando o cliente está disponível no fluxo de criação, dentro de `subscription.created` quando a assinatura é criada e dentro de `charge.update` quando a cobrança fica `PAID`.
 
 | Campo | Tipo | Descrição |
 | --- | --- | --- |
