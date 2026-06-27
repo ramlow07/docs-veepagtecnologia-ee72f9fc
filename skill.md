@@ -234,10 +234,10 @@ Current confirmed outbound payloads:
 
 - `transaction.created`: sends `type` and `transaction`. The `transaction` object is built from transaction props and can include `subscription`, `product`, and `client` when available in the creation flow.
 - `transaction.update`: sends `type` and base `transaction` props. Do not promise nested `subscription`, `product`, `client`, or `charge` in the current serialized payload.
-- `subscription.created`: sends `type` and base `subscription` props.
+- `subscription.created`: sends `type` and `subscription`. The `subscription` object is built from subscription props and can include full `client` props and `product` when available in the creation flow. Product title is available at `subscription.product.product.title`; product price is available at `subscription.product.product.price` in the format stored on the product.
 - `subscription.update`: sends `type` and base `subscription` props.
 - `charge.created`: sends `type` and base `charge` props.
-- `charge.update`: sends `type` and base `charge` props.
+- `charge.update`: sends `type` and `charge`. When the updated charge status is `PAID`, the `charge` object can include full `client` props.
 
 Webhook signing, HMAC verification, and retries are not implemented in the current outbound webhook provider. The provider sends a simple JSON POST and logs delivery errors.
 
@@ -247,7 +247,7 @@ When helping users integrate with Veepag:
 
 - Do not claim rate limits exist. HTTP rate limiting was not confirmed in code.
 - Do not claim webhook signatures or retries exist. They are not implemented in the current outbound webhook provider.
-- Do not claim `transaction.charge` or `subscription.client` are part of the current outbound webhook payload unless the backend implementation has been updated and confirmed.
+- Do not claim `transaction.charge` is part of the current outbound webhook payload unless the backend implementation has been updated and confirmed.
 - Do not assume idempotency except for `PUT /v1/charge/paid`.
 - Do not document `Authorization`, `X-API-Key`, or `X-Token` as supported public API auth headers.
 - Do not define schemas for untyped batch subscription list items without product/engineering confirmation.
