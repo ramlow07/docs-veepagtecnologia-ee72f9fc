@@ -44,9 +44,7 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
       "id": "integration_id",
       "integrationId": "integration_config_id",
       "name": "Nome do adquirente",
-      "orderId": "order_id",
-      "tid": "tid",
-      "paymentId": "payment_id"
+      "tid": "tid"
     },
     "amount": {
       "currency": "BRL",
@@ -196,9 +194,7 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
       "id": "integration_id",
       "integrationId": "integration_config_id",
       "name": "Nome do adquirente",
-      "orderId": "order_id",
-      "tid": "tid",
-      "paymentId": "payment_id"
+      "tid": "tid"
     },
     "amount": {
       "currency": "BRL",
@@ -238,7 +234,7 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
 | Campo | Tipo | Descrição |
 | --- | --- | --- |
 | `_id` | `string` | Identificador da transação. |
-| `acquirer` | `object` | Dados do adquirente: `chargeId`, `id`, `integrationId`, `name`, `orderId`, `authorization`, `tid` e `paymentId`. |
+| `acquirer` | `object` | Dados do adquirente: `chargeId`, `id`, `integrationId`, `name`, `authorization` e `tid`. |
 | `amount` | `object` | Valor da transação: `currency` e `value`. |
 | `boleto` | `object` ou `null` | Dados de boleto: `barcode`, `dueDate`, `url` e `links`. |
 | `card` | `object` ou `null` | Dados do cartão: `firstDigits`, `lastDigits`, `binInfo`, `reversible`, `brand`, `holderName` e `expiry`. |
