@@ -39,16 +39,27 @@ O campo `code` é o melhor ponto de partida para tratar erros de forma programá
 
 ## Erros de negócio comuns
 
-| Code | Quando pode ocorrer |
-| --- | --- |
-| `company_disabled` | Empresa ou seller inativo. |
-| `payment_method_already_exists` | Cartão já vinculado a outro cliente. |
-| `attempt_limit_exceeded` | Limite de cartões por cliente excedido em produção. |
-| `integration_access_not_found` | Integração de pagamento ausente para a empresa. |
-| `transaction_not_found` | Transação não encontrada para captura, cancelamento ou consulta. |
-| `product_not_found` | Produto inexistente ou inacessível. |
-| `client_not_found` | Cliente inexistente ou inacessível. |
-| `charge_not_found` | Cobrança inexistente ou inacessível. |
+| Code | O que aconteceu | Como resolver |
+| --- | --- | --- |
+| `company_disabled` | Empresa ou seller inativo. | Confirme se a empresa está ativa e liberada para operar. |
+| `payment_method_already_exists` | Cartão já vinculado a outro cliente. | Confira se o cartão foi cadastrado para o cliente correto. |
+| `attempt_limit_exceeded` | Limite de cartões por cliente excedido em produção. | Revise os meios de pagamento salvos antes de tentar cadastrar outro. |
+| `integration_access_not_found` | Integração de pagamento ausente para a empresa. | Confirme as integrações configuradas para a empresa. |
+| `transaction_not_found` | Transação não encontrada para captura, cancelamento ou consulta. | Confira `transactionId`, `tid`, empresa e ambiente. |
+| `acquirer_not_found` | Adquirente não encontrada para a operação. | Verifique a configuração de rotas/adquirentes da empresa ou produto. |
+| `product_not_found` | Produto inexistente ou inacessível. | Confira o `productId` e se a credencial tem acesso à empresa do produto. |
+| `client_not_found` | Cliente inexistente ou inacessível. | Confira o `clientId` e a empresa vinculada ao cliente. |
+| `client_already_exists` | Cliente já cadastrado. | Use o cliente existente ou busque pelo documento antes de criar outro. |
+| `invalid_client_birth` | Data de nascimento inválida. | Envie uma data válida no cadastro do cliente. |
+| `charge_not_found` | Cobrança inexistente ou inacessível. | Confira `_id`/`chargeId`, empresa e ambiente. |
+| `charge_attempt_already_made` | Tentativa de cobrança já realizada. | Consulte a cobrança/transação atual antes de tentar pagar novamente. |
+| `subscription_not_found` | Assinatura inexistente ou inacessível. | Confira `subscriptionId`, empresa e ambiente. |
+| `subscription_already_exists` | Assinatura já cadastrada. | Evite criar duplicidade; consulte a assinatura existente. |
+| `payment_already_made` | Pagamento já realizado. | Atualize seu sistema com o pagamento existente em vez de reenviar a tentativa. |
+| `invalid_cvv` | CVV inválido. | Solicite ao cliente a revisão dos dados do cartão. |
+| `bad_request` | Regra de negócio ou payload inválido. | Leia `error_messages` para entender o detalhe da falha. |
+| `invalid_captcha` | Token de captcha inválido no fluxo que exige captcha. | Gere um novo token e refaça a chamada. |
+| `token_expired` | Token expirado. | Gere ou solicite um novo token antes de chamar a API. |
 
 ## Como investigar
 
