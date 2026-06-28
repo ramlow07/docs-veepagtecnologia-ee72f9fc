@@ -30,6 +30,7 @@
         "pages": [
           "guides/values-and-formats",
           "guides/clients",
+          "guides/products",
           "guides/transactions",
           "guides/subscriptions",
           "guides/charges"

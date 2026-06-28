@@ -1,0 +1,130 @@
+---
+title: "Produtos"
+description: "Como produtos e planos sustentam cobranças e assinaturas na API Veepag."
+---
+
+Produtos representam aquilo que será cobrado: um plano, uma mensalidade, um serviço, uma assinatura ou uma oferta. Eles guardam informações comerciais, como nome e preço, e regras de cobrança, como frequência, métodos de pagamento e tentativas após falha.
+
+Use produtos sempre que sua integração precisar criar cobranças (`productId`) ou assinaturas (`product.id` no v1 e `productId` no v2).
+
+## Criar produto
+
+`POST /v1/product` cria um produto para uma empresa.
+
+```bash
+curl --request POST 'https://sandbox.api.veepag.com/v1/product' \
+  --header 'apiKey: keyId.secret' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "companyId": "company_id",
+    "product": {
+      "title": "Plano Mensal",
+      "price": 99.9,
+      "warranty": 7,
+      "description": "Assinatura mensal do serviço"
+    },
+    "charge": {
+      "frequencyDays": 30,
+      "deniedIntervalDays": 4,
+      "maxDeniedAttempts": 5,
+      "invoiceIdentification": "Plano Mensal",
+      "paymentMethod": [
+        {
+          "type": "CREDIT_CARD",
+          "active": true,
+          "installments": []
+        }
+      ]
+    },
+    "unsubscription": {
+      "type": "OVERDUE_DAYS",
+      "overdueDays": 10
+    }
+  }'
+```
+
+<Note>
+  Se alguns blocos opcionais não forem enviados, o backend monta um produto com valores padrão, como cobrança a cada 30 dias, métodos `CREDIT_CARD`, `PIX` e `BOLETO` ativos, e cancelamento por dias em atraso.
+</Note>
+
+## Campos comerciais
+
+| Campo | Descrição |
+| --- | --- |
+| `product.title` | Nome comercial do produto ou plano. |
+| `product.price` | Preço salvo no produto. É um `number` e não tem conversão automática confirmada no cadastro do produto. |
+| `product.originalPrice` | Preço original, quando houver comparação promocional. |
+| `product.description` | Descrição do produto. |
+| `product.photo` | URL ou referência de imagem, quando houver. |
+| `product.SKU` | Código interno do produto. |
+| `product.warranty` | Garantia em dias. |
+
+## Regras de cobrança
+
+| Campo | Descrição |
+| --- | --- |
+| `charge.frequencyDays` | Intervalo entre cobranças recorrentes. |
+| `charge.deniedIntervalDays` | Intervalo para nova tentativa após uma cobrança negada. |
+| `charge.maxDeniedAttempts` | Quantidade máxima de tentativas após falha. |
+| `charge.invoiceIdentification` | Identificação usada na cobrança ou nota, conforme o fluxo. |
+| `charge.paymentMethod` | Métodos de pagamento disponíveis para aquele produto. |
+| `charge.routes` | Rotas/adquirentes configuradas para processamento, quando informadas. |
+
+## Cancelamento
+
+`unsubscription` define a regra de cancelamento da assinatura vinculada ao produto.
+
+```json
+{
+  "unsubscription": {
+    "type": "OVERDUE_DAYS",
+    "overdueDays": 10
+  }
+}
+```
+
+Nesse exemplo, a regra usa dias em atraso para orientar o cancelamento.
+
+## Consultar produtos
+
+`GET /v1/product` lista produtos por empresa. O filtro `companyIds` é obrigatório e pode receber uma empresa ou uma lista.
+
+```bash
+curl --request GET 'https://sandbox.api.veepag.com/v1/product?companyIds=company_id' \
+  --header 'apiKey: keyId.secret'
+```
+
+Para buscar um produto específico, envie também `id`:
+
+```bash
+curl --request GET 'https://sandbox.api.veepag.com/v1/product?companyIds=company_id&id=product_id' \
+  --header 'apiKey: keyId.secret'
+```
+
+## Atualizar produto
+
+`PUT /v1/product` atualiza campos do produto. O DTO aceita atualização parcial dos mesmos blocos usados na criação.
+
+```json
+{
+  "_id": "product_id",
+  "companyId": "company_id",
+  "product": {
+    "title": "Plano Mensal Plus",
+    "price": 129.9
+  }
+}
+```
+
+## Produto nos webhooks
+
+Quando o produto é enviado em webhooks de transação, assinatura ou cobrança, os dados comerciais ficam aninhados em `product.product`.
+
+| Caminho | O que representa |
+| --- | --- |
+| `*.product.product.title` | Nome comercial do produto ou plano. |
+| `*.product.product.price` | Preço salvo no produto. |
+
+<Tip>
+  Para exibir o plano comprado no seu sistema, use o `title`. Para conciliação de valor, compare o preço do produto com o valor efetivamente cobrado na transação ou cobrança.
+</Tip>
