@@ -1,0 +1,101 @@
+---
+title: "Status e ciclos de vida"
+description: "Como interpretar status de transações, cobranças e assinaturas."
+---
+
+Status ajudam sua aplicação a entender em que momento está cada pagamento, cobrança ou assinatura. Eles também aparecem em respostas da API e em webhooks, então vale tratar esses valores com carinho desde o começo da integração.
+
+## Como usar status
+
+- Use o `status` do recurso para atualizar o estado no seu sistema.
+- Trate webhooks de forma idempotente, porque um mesmo estado pode ser recebido mais de uma vez.
+- Quando precisar confirmar o estado final, consulte a API usando o ID recebido no webhook ou na resposta da criação.
+
+<Note>
+  Em `POST /v1/subscription`, o HTTP `201` indica que a criação foi processada. O resultado da tentativa de pagamento fica dentro de `charge.statusCode`, `charge.status` e `charge.message`.
+</Note>
+
+## Transações
+
+Transações representam tentativas de pagamento. Estes são os status confirmados no enum de transação:
+
+| Status | Como interpretar |
+| --- | --- |
+| `PAID` | Pagamento aprovado. |
+| `PROCESSING` | Pagamento em processamento. |
+| `DECLINED` | Pagamento recusado. |
+| `CANCELED` | Transação cancelada. |
+| `DISCARDED` | Transação descartada pelo fluxo. |
+| `AUTHORIZED` | Transação autorizada, aguardando captura quando aplicável. |
+| `IN_ANALYSIS` | Transação em análise. |
+| `ERROR_PAYMENT` | Erro no pagamento. |
+| `DISPUTE` | Transação em disputa. |
+| `STANDBY` | Transação em espera. |
+| `CHARGEBACK` | Transação em chargeback. |
+| `PENDING_REVIEW` | Transação aguardando revisão. |
+| `PENDING_3DS` | Transação aguardando autenticação 3DS. |
+| `BLOCKED` | Transação bloqueada. |
+| `INVALID_PAYMENT` | Pagamento inválido. |
+| `NO_PAYMENT_ROUTE` | Não houve rota de pagamento disponível. |
+| `PENDING_PAYMENT` | Pagamento pendente, comum em meios como Pix ou boleto. |
+| `ERROR_REFUNDED` | Erro no reembolso/estorno. |
+
+## Cobranças
+
+Cobranças organizam o que precisa ser pago, o vencimento e as opções de pagamento.
+
+| Status | Como interpretar |
+| --- | --- |
+| `ACTIVE` | Cobrança ativa. |
+| `PAID` | Cobrança paga. |
+| `PENDING_PAYMENT` | Cobrança com pagamento pendente. |
+| `OVERDUE` | Cobrança vencida. |
+| `CANCELED` | Cobrança cancelada. |
+| `CANCELED_MANUAL` | Cobrança cancelada manualmente. |
+| `DISABLED` | Cobrança desabilitada. |
+| `ANTICIPATED` | Cobrança antecipada. |
+| `IMPORTED` | Cobrança importada. |
+| `ERROR_PAYMENT` | Erro no pagamento. |
+| `ERROR_REFUNDED` | Erro no reembolso/estorno. |
+| `NO_PAYMENT_ROUTE` | Não houve rota de pagamento disponível. |
+| `RECOVERED` | Cobrança recuperada. |
+| `BLOCKED` | Cobrança bloqueada. |
+| `NO_PAYMENT` | Sem pagamento confirmado. |
+| `DISPUTE` | Cobrança em disputa. |
+| `CHARGEBACK` | Cobrança em chargeback. |
+| `STANDBY` | Cobrança em espera. |
+| `CANCELED_ALERT_ETHOCA` | Cobrança cancelada por alerta Ethoca. |
+
+## Assinaturas
+
+Assinaturas representam recorrências vinculadas a cliente e produto.
+
+| Status | Como interpretar |
+| --- | --- |
+| `CREATED` | Assinatura criada. |
+| `ACTIVE` | Assinatura ativa. |
+| `PENDING_PAYMENT` | Assinatura com pagamento pendente. |
+| `OVERDUE` | Assinatura em atraso. |
+| `CANCELED_MANUAL` | Assinatura cancelada manualmente. |
+| `ERROR_PAYMENT` | Erro no pagamento. |
+| `NO_PAYMENT_ROUTE` | Não houve rota de pagamento disponível. |
+| `RECOVERED` | Assinatura recuperada. |
+| `NO_PAYMENT` | Sem pagamento confirmado. |
+| `CANCELED_ALERT_ETHOCA` | Assinatura cancelada por alerta Ethoca. |
+| `BLOCKED` | Assinatura bloqueada. |
+| `IMPORTED` | Assinatura importada. |
+| `STANDBY` | Assinatura em espera. |
+
+## Relação com webhooks
+
+Os webhooks de `transaction.update`, `charge.update` e `subscription.update` são os principais sinais para acompanhar mudanças de status sem consultar a API o tempo todo.
+
+| Evento | Recurso atualizado |
+| --- | --- |
+| `transaction.update` | Status da transação. |
+| `charge.update` | Status da cobrança. |
+| `subscription.update` | Status da assinatura. |
+
+<Tip>
+  Salve o último status conhecido e o horário de atualização (`lastUpdate`). Assim sua aplicação consegue ignorar eventos repetidos ou mais antigos sem perder rastreabilidade.
+</Tip>
