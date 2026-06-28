@@ -24,7 +24,7 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
 | `charge.update` | `{ "type": "charge.update", "charge": { ... } }` |
 
 <Note>
-  O payload de `transaction.created` pode trazer `subscription`, `product` e `client` dentro de `transaction`, quando esses dados estiverem disponíveis no fluxo de criação. No envio atual confirmado em código, `transaction.update` envia os campos base da transação. O objeto `charge` não é enviado dentro de `transaction` hoje.
+  O payload de `transaction.created` pode trazer `subscription`, `product` e `client` dentro de `transaction`, quando esses dados estiverem disponíveis no fluxo de criação. No envio atual confirmado, `transaction.update` envia os campos base da transação. O objeto `charge` não é enviado dentro de `transaction` hoje.
 </Note>
 
 <Note>
@@ -51,13 +51,6 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
       "value": 9900
     },
     "boleto": null,
-    "card": {
-      "firstDigits": "411111",
-      "lastDigits": "1111",
-      "brand": "visa",
-      "holderName": "Cliente Veepag",
-      "expiry": "12/2030"
-    },
     "chargeId": "charge_id",
     "clientId": "client_id",
     "code": null,
@@ -237,7 +230,7 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
 | `acquirer` | `object` | Dados do adquirente: `chargeId`, `id`, `integrationId`, `name`, `authorization` e `tid`. |
 | `amount` | `object` | Valor da transação: `currency` e `value`. |
 | `boleto` | `object` ou `null` | Dados de boleto: `barcode`, `dueDate`, `url` e `links`. |
-| `card` | `object` ou `null` | Dados do cartão: `firstDigits`, `lastDigits`, `binInfo`, `reversible`, `brand`, `holderName` e `expiry`. |
+| `card` | `object` ou `null` | Dados do cartão, quando salvos no payload interno. Esses dados foram omitidos dos exemplos por não serem necessários para integração via webhook. |
 | `chargeId` | `string` | Identificador da cobrança vinculada, quando houver. |
 | `clientId` | `string` | Identificador do cliente vinculado. |
 | `code` | `string` ou `null` | Código retornado pelo fluxo de pagamento, quando houver. |
@@ -357,7 +350,7 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
 
 O evento `subscription.update` usa a mesma estrutura, alterando apenas o `type` para `subscription.update` e refletindo os dados atualizados da assinatura.
 
-No evento `subscription.created`, os objetos `client` e `product` são enviados dentro de `subscription` quando disponíveis no fluxo de criação. O objeto `client` traz os dados cadastrais do cliente, incluindo nome, e-mail, documento, telefones e endereço quando cadastrados. O nome comercial do plano fica em `subscription.product.product.title`. O preço do produto fica em `subscription.product.product.price` e segue o formato cadastrado no produto.
+Nos eventos de assinatura, os objetos `client` e `product` são enviados dentro de `subscription` quando disponíveis. O objeto `client` traz os dados cadastrais do cliente, incluindo nome, e-mail, documento, telefones e endereço quando cadastrados. O nome comercial do plano fica em `subscription.product.product.title`. O preço do produto fica em `subscription.product.product.price` e segue o formato cadastrado no produto.
 
 ### Campos de `subscription`
 
@@ -378,8 +371,8 @@ No evento `subscription.created`, os objetos `client` e `product` são enviados 
 | `paymentMethod` | `array` | Métodos de pagamento disponíveis para a assinatura. |
 | `previousData` | `object` ou `null` | Dados anteriores da assinatura. Pode conter `nextCharge` e `status`. |
 | `productId` | `string` | Identificador do produto vinculado. |
-| `client` | `object` | Cliente vinculado enviado em `subscription.created`, quando disponível no fluxo. |
-| `product` | `object` | Produto vinculado enviado em `subscription.created`, quando disponível no fluxo. O nome comercial fica em `product.product.title` e o preço fica em `product.product.price`, no formato cadastrado no produto. |
+| `client` | `object` | Cliente vinculado enviado quando disponível no fluxo. |
+| `product` | `object` | Produto vinculado enviado quando disponível no fluxo. O nome comercial fica em `product.product.title` e o preço fica em `product.product.price`, no formato cadastrado no produto. |
 | `referenceId` | `string` ou `null` | Referência externa enviada pela integração, quando houver. |
 | `status` | `string` | Status atual da assinatura. |
 | `affiliateId` | `string` | Identificador do afiliado, quando houver. |
@@ -396,12 +389,6 @@ No evento `subscription.created`, os objetos `client` e `product` são enviados 
     "amount": {
       "value": 9900,
       "currency": "BRL"
-    },
-    "card": {
-      "acquirer": "Nome do adquirente",
-      "brand": "visa",
-      "message": "Pagamento aprovado",
-      "code": "00"
     },
     "cardAuth": true,
     "clientId": "client_id",
@@ -472,6 +459,27 @@ No evento `subscription.created`, os objetos `client` e `product` são enviados 
       "referenceId": "cliente-123",
       "status": "ACTIVE",
       "type": "INDIVIDUAL"
+    },
+    "product": {
+      "_id": "product_id",
+      "active": true,
+      "charge": {
+        "amount": 9900
+      },
+      "checkout": null,
+      "companyId": "company_id",
+      "createdAt": "2026-06-23T12:00:00.000Z",
+      "deleted": false,
+      "discount": null,
+      "notification": null,
+      "product": {
+        "title": "Plano Proteção Residencial",
+        "price": 99.9
+      },
+      "send": null,
+      "setting": {},
+      "split": {},
+      "unsubscription": null
     }
   }
 }
@@ -479,7 +487,7 @@ No evento `subscription.created`, os objetos `client` e `product` são enviados 
 
 O evento `charge.created` usa a mesma estrutura, alterando apenas o `type` para `charge.created` e refletindo os dados da cobrança criada.
 
-No evento `charge.update`, quando a cobrança atualizada fica com status `PAID`, o objeto `client` é enviado dentro de `charge` com os dados cadastrais do cliente, incluindo nome, e-mail e documento quando cadastrados.
+Nos eventos de cobrança, os objetos `client` e `product` são enviados dentro de `charge` quando disponíveis. O objeto `client` traz os dados cadastrais do cliente, incluindo nome, e-mail e documento quando cadastrados.
 
 ### Campos de `charge`
 
@@ -488,7 +496,7 @@ No evento `charge.update`, quando a cobrança atualizada fica com status `PAID`,
 | `_id` | `string` | Identificador da cobrança. |
 | `active` | `boolean` | Indica se a cobrança está ativa. |
 | `amount` | `object` | Valor da cobrança: `value` e `currency`. |
-| `card` | `object` ou `null` | Resultado de cartão: `acquirer`, `brand`, `message` e `code`. |
+| `card` | `object` ou `null` | Resultado de cartão, quando salvo no payload interno. Esses dados foram omitidos dos exemplos por não serem necessários para integração via webhook. |
 | `cardAuth` | `boolean` ou `null` | Indica se a cobrança usa autorização de cartão. |
 | `clientId` | `string` | Identificador do cliente. |
 | `companyId` | `string` | Identificador da empresa. |
@@ -506,13 +514,14 @@ No evento `charge.update`, quando a cobrança atualizada fica com status `PAID`,
 | `lastUpdate` | `string` | Data da última atualização em formato ISO. |
 | `chargeDate` | `string` ou `null` | Data de cobrança, quando houver. |
 | `createdAt` | `string` | Data de criação em formato ISO. |
-| `client` | `object` | Cliente vinculado enviado em `charge.update` quando a cobrança fica `PAID`. |
+| `client` | `object` | Cliente vinculado enviado quando disponível. |
+| `product` | `object` | Produto vinculado enviado quando disponível. |
 
 ## Objetos relacionados
 
 ### `client`
 
-O objeto `client` é enviado dentro de `transaction.created` quando o cliente está disponível no fluxo de criação, dentro de `subscription.created` quando a assinatura é criada e dentro de `charge.update` quando a cobrança fica `PAID`.
+O objeto `client` é enviado dentro de `transaction.created` quando o cliente está disponível no fluxo de criação, dentro dos webhooks de assinatura quando disponível e dentro dos webhooks de cobrança quando disponível.
 
 | Campo | Tipo | Descrição |
 | --- | --- | --- |
@@ -540,7 +549,7 @@ O objeto `client` é enviado dentro de `transaction.created` quando o cliente es
 
 ### `product`
 
-O objeto `product` é enviado hoje dentro de `transaction.created` quando o produto está disponível no fluxo de criação.
+O objeto `product` é enviado dentro de `transaction.created`, dos webhooks de assinatura e dos webhooks de cobrança quando disponível.
 
 | Campo | Tipo | Descrição |
 | --- | --- | --- |

@@ -252,9 +252,11 @@ Current confirmed outbound payloads:
 - `transaction.created`: sends `type` and `transaction`. The `transaction` object is built from transaction props and can include `subscription`, `product`, and `client` when available in the creation flow.
 - `transaction.update`: sends `type` and base `transaction` props. Do not promise nested `subscription`, `product`, `client`, or `charge` in the current serialized payload.
 - `subscription.created`: sends `type` and `subscription`. The `subscription` object is built from subscription props and can include full `client` props and `product` when available in the creation flow. Product title is available at `subscription.product.product.title`; product price is available at `subscription.product.product.price` in the format stored on the product.
-- `subscription.update`: sends `type` and base `subscription` props.
-- `charge.created`: sends `type` and base `charge` props.
-- `charge.update`: sends `type` and `charge`. When the updated charge status is `PAID`, the `charge` object can include full `client` props.
+- `subscription.update`: sends `type` and `subscription`. The `subscription` object can include full `client` props and `product` when available.
+- `charge.created`: sends `type` and `charge`. The `charge` object can include full `client` props and `product` when available.
+- `charge.update`: sends `type` and `charge`. The `charge` object can include full `client` props and `product` when available.
+
+When writing public webhook examples, use fictitious client data only. Do not expose real names, emails, documents, phone numbers, addresses, IP addresses, or card details. Card data is not necessary in webhook examples and should be omitted.
 
 Webhook signing, HMAC verification, and retries are not implemented in the current outbound webhook provider. The provider sends a simple JSON POST and logs delivery errors.
 
