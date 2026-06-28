@@ -1,0 +1,104 @@
+---
+title: "Alertas"
+description: "Como consultar e tratar alertas operacionais de contestacao, fraude e reembolso."
+---
+
+Alertas ajudam sua equipe a acompanhar situações sensíveis, como contestação, fraude, chargeback, disputa e tentativas de reembolso. Eles são um fluxo operacional da API, não um webhook.
+
+Use esta área para consultar alertas, exportar dados para análise, marcar um alerta como resolvido e solicitar uma nova tentativa de reembolso quando fizer sentido para a operação.
+
+## Tipos e status
+
+Tipos confirmados:
+
+| Tipo | Descrição |
+| --- | --- |
+| `ETHOCA` | Alerta Ethoca. |
+| `VISA` | Alerta Visa. |
+
+Status confirmados:
+
+| Status | Como interpretar |
+| --- | --- |
+| `CREATED` | Alerta criado. |
+| `ACKNOWLEDGEMENT` | Alerta reconhecido. |
+| `NOT_FOUND` | Recurso relacionado não encontrado no processamento do alerta. |
+| `REFUNDED` | Reembolso realizado. |
+| `RESOLVED` | Alerta resolvido manualmente. |
+| `ERROR_REFUNDED` | Erro ao reembolsar. |
+| `ERROR` | Erro no processamento do alerta. |
+| `CANCELED` | Alerta cancelado. |
+| `CHARGEBACK` | Alerta relacionado a chargeback. |
+| `DISPUTE` | Alerta relacionado a disputa. |
+
+## Consultar alertas
+
+`GET /v1/alert` retorna alertas paginados com filtros operacionais.
+
+```bash
+curl --request GET 'https://sandbox.api.veepag.com/v1/alert?type=ETHOCA&page=1&limit=20' \
+  --header 'apiKey: keyId.secret'
+```
+
+Filtros confirmados:
+
+| Campo | Uso |
+| --- | --- |
+| `id` | Busca um alerta específico. |
+| `referenceId` | Busca pela referência externa vinculada ao alerta. |
+| `type` | Filtra por `ETHOCA` ou `VISA`. |
+| `status` | Filtra por um ou mais status. |
+| `rangeTime.start` e `rangeTime.end` | Filtram por período conforme `sort.property`. |
+| `sort.property` | Aceita `createdAt` ou `lastUpdate`. |
+| `sort.order` | Aceita `asc` ou `desc`. |
+| `cardFirst6` | Filtra pelos 6 primeiros dígitos do cartão. |
+| `cardLast4` | Filtra pelos 4 últimos dígitos do cartão. |
+| `page` e `limit` | Paginação. `limit` aceita de 1 a 100. |
+
+<Warning>
+  Use filtros de cartão apenas para busca operacional. Não exponha dados sensíveis em logs, telas públicas ou mensagens de suporte.
+</Warning>
+
+## Exportar alertas
+
+`GET /v1/alert/exports` exporta alertas com os mesmos filtros principais da listagem.
+
+```bash
+curl --request GET 'https://sandbox.api.veepag.com/v1/alert/exports?type=ETHOCA&sort.property=createdAt&sort.order=desc' \
+  --header 'apiKey: keyId.secret'
+```
+
+O limite confirmado é de 100.000 itens por exportação. Se a consulta exceder esse limite, reduza o período ou refine os filtros.
+
+## Marcar como resolvido
+
+`POST /v1/alert/update/resolved` marca um alerta como `RESOLVED`.
+
+```bash
+curl --request POST 'https://sandbox.api.veepag.com/v1/alert/update/resolved' \
+  --header 'apiKey: keyId.secret' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "companyId": "company_id",
+    "alertId": "alert_id"
+  }'
+```
+
+Use esse endpoint quando sua equipe já analisou o caso e quer encerrar o tratamento operacional do alerta.
+
+## Solicitar retry de refund
+
+`POST /v1/alert/retry-refund` enfileira uma nova tentativa de refund para alertas da empresa.
+
+```bash
+curl --request POST 'https://sandbox.api.veepag.com/v1/alert/retry-refund' \
+  --header 'apiKey: keyId.secret' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "companyId": "company_id"
+  }'
+```
+
+<Note>
+  Esse endpoint atua por empresa. Antes de solicitar uma nova tentativa, confira os alertas com status de erro e valide se o retry faz sentido para o momento da operação.
+</Note>

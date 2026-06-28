@@ -34,7 +34,8 @@
           "guides/status-lifecycle",
           "guides/transactions",
           "guides/subscriptions",
-          "guides/charges"
+          "guides/charges",
+          "guides/alerts"
         ]
       },
       {
