@@ -2112,7 +2112,7 @@
     },
     "/v1/subscription": {
       "post": {
-        "description": "Cria assinatura, gera cobranca e tenta pagamento imediato.",
+        "description": "Cria uma assinatura, gera a cobranca e tenta o pagamento imediato. A resposta confirma a assinatura criada e traz o resultado da tentativa de pagamento dentro de charge.",
         "operationId": "SubscriptionController_createV1",
         "parameters": [],
         "requestBody": {
@@ -2173,7 +2173,8 @@
                     "acquirer": {},
                     "qrCode": null,
                     "boleto": null
-                  }
+                  },
+                  "nextCharge": "2026-07-23T12:00:00.000Z"
                 }
               }
             }
@@ -2764,7 +2765,7 @@
         "tags": [
           "Subscription"
         ],
-        "description": "Cria assinatura e cobranca para cliente existente, sem tentativa de pagamento imediata."
+        "description": "Cria uma assinatura e uma cobranca para um cliente existente, sem tentar pagamento imediato."
       }
     },
     "/v1/subscription/list": {
@@ -8434,7 +8435,8 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": "subscription_id"
+            "example": "subscription_id",
+            "description": "Identificador da assinatura criada."
           },
           "transactionId": {
             "type": "array",
@@ -8443,24 +8445,29 @@
             },
             "example": [
               "transaction_id"
-            ]
+            ],
+            "description": "Lista de transacoes criadas durante a tentativa de pagamento."
           },
           "status": {
-            "$ref": "#/components/schemas/SubscriptionStatus"
+            "$ref": "#/components/schemas/SubscriptionStatus",
+            "description": "Status atual da assinatura depois da tentativa de cobranca."
           },
           "nextCharge": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Proxima data de cobranca da assinatura, quando disponivel."
           },
           "paymentMethod": {
-            "$ref": "#/components/schemas/PaymentMethod"
+            "$ref": "#/components/schemas/PaymentMethod",
+            "description": "Meio de pagamento usado na tentativa."
           },
           "charge": {
             "type": "object",
             "properties": {
               "statusCode": {
                 "type": "integer",
-                "example": 200
+                "example": 200,
+                "description": "Resultado da tentativa de pagamento: 200 para pagamento aprovado ou 402 para pagamento nao aprovado."
               },
               "amount": {
                 "type": "object",
@@ -8473,31 +8480,38 @@
                     "type": "string",
                     "example": "BRL"
                   }
-                }
+                },
+                "description": "Valor processado na tentativa."
               },
               "status": {
-                "$ref": "#/components/schemas/ChargeStatus"
+                "$ref": "#/components/schemas/ChargeStatus",
+                "description": "Status da cobranca depois da tentativa de pagamento."
               },
               "message": {
-                "type": "string"
+                "type": "string",
+                "description": "Mensagem retornada pelo fluxo de pagamento ou pela adquirente."
               },
               "acquirer": {
                 "type": "object",
-                "additionalProperties": true
+                "additionalProperties": true,
+                "description": "Dados retornados pela adquirente, quando disponiveis."
               },
               "qrCode": {
                 "type": [
                   "string",
                   "null"
-                ]
+                ],
+                "description": "Dados de Pix, quando o meio de pagamento gerar QR Code."
               },
               "boleto": {
                 "type": [
                   "string",
                   "null"
-                ]
+                ],
+                "description": "Dados de boleto, quando o meio de pagamento gerar boleto."
               }
-            }
+            },
+            "description": "Resultado da cobranca e da tentativa de pagamento feita pelo endpoint v1."
           }
         }
       },
@@ -8510,7 +8524,8 @@
           "charge": {
             "$ref": "#/components/schemas/Charge"
           }
-        }
+        },
+        "description": "Resposta da criacao v2. Retorna assinatura e cobranca criadas, sem tentativa de pagamento imediato."
       },
       "TransactionStatus": {
         "type": "string",

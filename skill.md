@@ -159,6 +159,13 @@ Use `POST /v1/subscription`.
 
 This creates the subscription, creates a charge, and attempts immediate payment.
 
+The HTTP response can be `201` when the subscription creation is processed, but payment success is reported inside the response `charge` object. Check:
+
+- `charge.statusCode`: `200` means payment approved; `402` means payment was not approved.
+- `charge.status`: resulting charge status.
+- `charge.message`: payment/acquirer message.
+- `transactionId`: transactions created during the payment attempt.
+
 For credit card, send:
 
 - `paymentMethod: CREDIT_CARD`
@@ -172,6 +179,8 @@ For credit card, send:
 Use `POST /v2/subscription`.
 
 This creates a subscription and charge for an existing `clientId`, without immediate payment.
+
+The v2 response returns `{ subscription, charge }` and does not include immediate payment success or failure, because no payment attempt is made by this endpoint.
 
 Required confirmed fields:
 

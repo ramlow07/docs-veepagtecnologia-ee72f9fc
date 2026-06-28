@@ -52,6 +52,52 @@ curl --request POST 'https://sandbox.api.veepag.com/v1/subscription' \
   Use `metadata` para guardar identificadores da sua aplicação, como pedido, contrato ou plano interno. Isso facilita conciliação e suporte depois.
 </Tip>
 
+### Resposta da criação v1
+
+A resposta do v1 confirma a criação da assinatura e também mostra o resultado da tentativa de pagamento dentro de `charge`.
+
+Isso é importante: o endpoint pode retornar `201` porque a assinatura foi criada, mas o pagamento pode ter sido aprovado ou recusado. Para saber o resultado financeiro da tentativa, leia os campos de `charge`.
+
+```json
+{
+  "id": "subscription_id",
+  "transactionId": ["transaction_id"],
+  "status": "ACTIVE",
+  "nextCharge": "2026-07-23T12:00:00.000Z",
+  "paymentMethod": "CREDIT_CARD",
+  "charge": {
+    "statusCode": 200,
+    "amount": {
+      "value": 9900,
+      "currency": "BRL"
+    },
+    "status": "PAID",
+    "message": "Pagamento aprovado",
+    "acquirer": {},
+    "qrCode": null,
+    "boleto": null
+  }
+}
+```
+
+| Campo | Como interpretar |
+| --- | --- |
+| `id` | Identificador da assinatura criada. |
+| `transactionId` | Lista de transações criadas durante a tentativa de pagamento. |
+| `status` | Status atual da assinatura depois da tentativa de cobrança. |
+| `nextCharge` | Próxima data de cobrança da assinatura, quando disponível. |
+| `paymentMethod` | Meio de pagamento usado na tentativa. |
+| `charge.statusCode` | Resultado da tentativa de pagamento: `200` para aprovado ou `402` para pagamento não aprovado. |
+| `charge.status` | Status da cobrança após a tentativa. |
+| `charge.message` | Mensagem retornada pelo fluxo de pagamento. |
+| `charge.acquirer` | Dados retornados pela adquirente, quando disponíveis. |
+| `charge.qrCode` | Dados de Pix, quando o meio de pagamento gerar QR Code. |
+| `charge.boleto` | Dados de boleto, quando o meio de pagamento gerar boleto. |
+
+<Note>
+  Para confirmar se o pagamento foi aprovado, use `charge.statusCode`, `charge.status` e `charge.message`. O HTTP `201` indica que a criação da assinatura foi processada; ele não significa, sozinho, que o pagamento foi aprovado.
+</Note>
+
 ## Criar assinatura v2
 
 `POST /v2/subscription` cria a assinatura e a cobrança, mas não tenta o pagamento imediato. Esse caminho é melhor quando o cliente já existe na Veepag e você quer controlar o momento do pagamento separadamente.
@@ -64,6 +110,25 @@ Principais diferenças:
 | Produto em `product.id` | Produto em `productId` |
 | Pagamento imediato | Cria subscription + charge sem pagamento |
 | Não recebe `dueDate` no DTO público | `dueDate` obrigatório |
+
+### Resposta da criação v2
+
+Como o v2 não tenta pagamento imediato, a resposta não traz sucesso ou falha de transação. Ela retorna os objetos criados para você seguir o fluxo no seu próprio momento.
+
+```json
+{
+  "subscription": {
+    "_id": "subscription_id",
+    "status": "CREATED"
+  },
+  "charge": {
+    "_id": "charge_id",
+    "status": "ACTIVE"
+  }
+}
+```
+
+Use o v2 quando a sua integração já tem um `clientId`, quer definir uma data de vencimento em `dueDate` e prefere conduzir o pagamento depois.
 
 ## Cancelar assinatura
 
