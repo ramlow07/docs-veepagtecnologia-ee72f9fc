@@ -1,0 +1,86 @@
+---
+title: "Valores e formatos"
+description: "Como enviar e interpretar valores monetarios, datas e identificadores na API Veepag."
+---
+
+Alguns campos da API representam dinheiro, mas nem todos usam o mesmo formato de entrada. Esta página existe para deixar essa diferença bem clara e ajudar sua integração a enviar o valor certo em cada fluxo.
+
+## Valores monetários
+
+| Onde aparece | Campo | Formato confirmado |
+| --- | --- | --- |
+| Criar transação | `amount` | Inteiro em centavos. Exemplo: `9900` representa R$ 99,00. |
+| Criar cobrança | `amount` | Número decimal. Exemplo: `99.9` representa R$ 99,90 e é convertido internamente para centavos. |
+| Produto | `product.price` | Número salvo no produto, sem conversão automática confirmada no fluxo de criação do produto. |
+| Webhooks de transação | `transaction.amount.value` | Valor já serializado em centavos a partir da transação. |
+| Webhooks de cobrança | `charge.amount.value` | Valor já serializado em centavos a partir da cobrança. |
+
+<Warning>
+  Antes de ir para produção, valide seus cálculos no sandbox. O erro mais comum em integrações de pagamento é enviar R$ 99,00 como `99` em um endpoint que espera centavos, ou como `9900` em um endpoint que espera decimal.
+</Warning>
+
+## Exemplos rápidos
+
+Criar uma transação de R$ 99,00:
+
+```json
+{
+  "amount": 9900
+}
+```
+
+Criar uma cobrança de R$ 99,90:
+
+```json
+{
+  "amount": 99.9
+}
+```
+
+Configurar o preço comercial de um produto:
+
+```json
+{
+  "product": {
+    "title": "Plano Mensal",
+    "price": 99.9,
+    "warranty": 7
+  }
+}
+```
+
+## Datas
+
+Use datas em formato ISO sempre que possível. Em `POST /v1/charge`, o campo `dueDate` é recebido como data e normalizado internamente para o meio-dia.
+
+```json
+{
+  "dueDate": "2026-07-23"
+}
+```
+
+Nos retornos e webhooks, as datas normalmente aparecem como strings ISO:
+
+```json
+{
+  "createdAt": "2026-06-23T12:00:00.000Z",
+  "lastUpdate": "2026-06-23T12:00:03.000Z"
+}
+```
+
+## Identificadores
+
+Os principais recursos usam IDs próprios da Veepag:
+
+| Campo | Uso |
+| --- | --- |
+| `companyId` | Identifica a empresa da sua conta. A credencial precisa ter acesso a essa empresa. |
+| `clientId` | Identifica o cliente cadastrado. |
+| `productId` | Identifica o produto/plano usado em cobranças e assinaturas. |
+| `chargeId` | Identifica uma cobrança. |
+| `transactionId` | Identifica uma transação. |
+| `referenceId` | Referência externa da sua aplicação, quando o fluxo permite. |
+
+<Tip>
+  Guarde os IDs retornados pela Veepag junto com os IDs internos do seu sistema. Isso facilita conciliação, suporte e tratamento de webhooks depois.
+</Tip>
