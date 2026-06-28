@@ -5641,7 +5641,8 @@
         "type": "object",
         "properties": {
           "companyId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da empresa que recebera a transacao. A credencial precisa ter acesso a essa empresa."
           },
           "paymentProfile": {
             "type": "object",
@@ -5663,7 +5664,8 @@
               "cardNumber",
               "cardExpiration",
               "holderName"
-            ]
+            ],
+            "description": "Dados do cartao usados para processar a transacao."
           },
           "client": {
             "type": "object",
@@ -5783,7 +5785,8 @@
             },
             "required": [
               "name"
-            ]
+            ],
+            "description": "Dados do cliente enviados inline. Quando informado, o documento deve ser enviado em doc ou cpf."
           },
           "amount": {
             "type": "number",
@@ -5792,11 +5795,13 @@
           },
           "installments": {
             "type": "number",
-            "default": 1
+            "default": 1,
+            "description": "Quantidade de parcelas. Quando omitido, o fluxo usa 1 parcela."
           },
           "capture": {
             "type": "boolean",
-            "default": true
+            "default": true,
+            "description": "Indica se a transacao deve ser capturada imediatamente. Quando omitido, o fluxo usa true."
           }
         },
         "required": [
@@ -5853,7 +5858,8 @@
         "properties": {
           "companyId": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "ID da empresa vinculada ao cliente."
           },
           "type": {
             "type": [
@@ -5867,30 +5873,35 @@
             "x-enumNames": [
               "INDIVIDUAL",
               "COMPANY"
-            ]
+            ],
+            "description": "Tipo do cliente, conforme enum aceito pela API."
           },
           "referenceId": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Identificador externo da sua aplicacao para conciliacao."
           },
           "name": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Nome do cliente. Nao aceita numeros ou caracteres especiais."
           },
           "birth": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Data de nascimento do cliente, quando disponivel."
           },
           "email": {
             "type": [
               "string",
               "null"
             ],
-            "format": "email"
+            "format": "email",
+            "description": "E-mail do cliente."
           },
           "phone": {
             "type": [
@@ -5899,13 +5910,15 @@
             ],
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Lista de telefones do cliente."
           },
           "note": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Observacao interna sobre o cliente."
           },
           "address": {
             "type": [
@@ -5967,7 +5980,8 @@
                   "null"
                 ]
               }
-            }
+            },
+            "description": "Endereco do cliente."
           },
           "device": {
             "type": [
@@ -6002,17 +6016,20 @@
               "javaEnabled": {
                 "type": "boolean"
               }
-            }
+            },
+            "description": "Dados do dispositivo do cliente, quando coletados no fluxo de compra."
           },
           "ipAddress": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "IP do cliente, quando disponivel."
           },
           "doc": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "CPF ou CNPJ valido do cliente."
           }
         },
         "required": [
@@ -6026,7 +6043,8 @@
         "properties": {
           "_id": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "ID do cliente que sera atualizado."
           },
           "type": {
             "type": [
@@ -6040,32 +6058,37 @@
             "x-enumNames": [
               "INDIVIDUAL",
               "COMPANY"
-            ]
+            ],
+            "description": "Tipo do cliente, conforme enum aceito pela API."
           },
           "referenceId": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Identificador externo da sua aplicacao para conciliacao."
           },
           "name": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Nome atualizado do cliente. Nao aceita numeros ou caracteres especiais."
           },
           "birth": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Data de nascimento do cliente, quando disponivel."
           },
           "email": {
             "type": [
               "string",
               "null"
             ],
-            "format": "email"
+            "format": "email",
+            "description": "E-mail do cliente."
           },
           "phone": {
             "type": [
@@ -6074,13 +6097,15 @@
             ],
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Lista de telefones do cliente."
           },
           "note": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Observacao interna sobre o cliente."
           },
           "address": {
             "type": [
@@ -6142,7 +6167,8 @@
                   "null"
                 ]
               }
-            }
+            },
+            "description": "Endereco do cliente."
           },
           "device": {
             "type": [
@@ -6177,13 +6203,15 @@
               "javaEnabled": {
                 "type": "boolean"
               }
-            }
+            },
+            "description": "Dados do dispositivo do cliente, quando coletados no fluxo de compra."
           },
           "ipAddress": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "IP do cliente, quando disponivel."
           }
         },
         "required": [
@@ -6197,7 +6225,8 @@
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Referencia externa da sua aplicacao para a assinatura."
           },
           "origin": {
             "type": "string",
@@ -6213,18 +6242,22 @@
               "IMPORTED",
               "AFFILIATE"
             ],
-            "default": "API"
+            "default": "API",
+            "description": "Origem da criacao da assinatura, quando informada."
           },
           "captchaToken": {
-            "type": "string"
+            "type": "string",
+            "description": "Token de captcha usado em fluxos que exigem captcha."
           },
           "companyId": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "ID da empresa da assinatura."
           },
           "metadata": {
             "type": "object",
-            "additionalProperties": {}
+            "additionalProperties": {},
+            "description": "Metadados livres para conciliacao e suporte."
           },
           "product": {
             "type": "object",
@@ -6236,7 +6269,8 @@
             },
             "required": [
               "id"
-            ]
+            ],
+            "description": "Objeto com o ID do produto usado na assinatura v1."
           },
           "paymentMethod": {
             "type": "string",
@@ -6251,7 +6285,8 @@
               "DEBIT_CARD",
               "BOLETO",
               "PIX"
-            ]
+            ],
+            "description": "Meio de pagamento usado na tentativa inicial."
           },
           "paymentProfile": {
             "type": "object",
@@ -6268,13 +6303,15 @@
               "cardCvv": {
                 "type": "string"
               }
-            }
+            },
+            "description": "Dados de pagamento, obrigatorios para cartao."
           },
           "cardAuthId": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "ID de autorizacao de cartao, quando usado no fluxo."
           },
           "client": {
             "type": "object",
@@ -6394,21 +6431,25 @@
             },
             "required": [
               "name"
-            ]
+            ],
+            "description": "Dados do cliente enviados inline para criar a assinatura v1."
           },
           "installments": {
             "type": "integer",
             "exclusiveMinimum": 0,
-            "default": 1
+            "default": 1,
+            "description": "Quantidade de parcelas da assinatura."
           },
           "affiliateId": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "ID do afiliado vinculado, quando houver."
           },
           "url": {
-            "type": "string"
+            "type": "string",
+            "description": "URL relacionada ao fluxo, quando informada."
           }
         },
         "required": [
@@ -6422,19 +6463,23 @@
         "type": "object",
         "properties": {
           "referenceId": {
-            "type": "string"
+            "type": "string",
+            "description": "Referencia externa da sua aplicacao para a assinatura."
           },
           "companyId": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "ID da empresa da assinatura."
           },
           "metadata": {
             "type": "object",
-            "additionalProperties": {}
+            "additionalProperties": {},
+            "description": "Metadados livres para conciliacao e suporte."
           },
           "productId": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "ID do produto usado na assinatura v2."
           },
           "paymentMethod": {
             "type": "string",
@@ -6449,11 +6494,13 @@
               "DEBIT_CARD",
               "BOLETO",
               "PIX"
-            ]
+            ],
+            "description": "Metodos de pagamento disponiveis para a assinatura."
           },
           "clientId": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "ID de um cliente ja cadastrado na Veepag."
           },
           "origin": {
             "type": "string",
@@ -6469,10 +6516,12 @@
               "IMPORTED",
               "AFFILIATE"
             ],
-            "default": "API"
+            "default": "API",
+            "description": "Origem da criacao da assinatura, quando informada."
           },
           "affiliateId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do afiliado vinculado, quando houver."
           },
           "dueDate": {
             "oneOf": [
@@ -6482,7 +6531,8 @@
               {
                 "type": "number"
               }
-            ]
+            ],
+            "description": "Data de vencimento usada para criar a primeira cobranca."
           }
         },
         "required": [
@@ -6551,13 +6601,16 @@
         "type": "object",
         "properties": {
           "companyId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da empresa dona do produto."
           },
           "active": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Indica se o produto esta ativo."
           },
           "deleted": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Indica exclusao logica do produto."
           },
           "setting": {
             "type": "object",
@@ -6590,7 +6643,8 @@
                   "qty"
                 ]
               }
-            }
+            },
+            "description": "Configuracoes gerais do produto."
           },
           "charge": {
             "type": "object",
@@ -6780,7 +6834,8 @@
               "maxDeniedAttempts",
               "invoiceIdentification",
               "paymentMethod"
-            ]
+            ],
+            "description": "Regras de cobranca do produto, como frequencia, tentativas e metodos de pagamento."
           },
           "product": {
             "type": "object",
@@ -6814,7 +6869,8 @@
               "price",
               "title",
               "warranty"
-            ]
+            ],
+            "description": "Dados comerciais do produto, como title, price e warranty."
           },
           "unsubscription": {
             "type": "object",
@@ -6839,7 +6895,8 @@
             },
             "required": [
               "type"
-            ]
+            ],
+            "description": "Regra de cancelamento da assinatura vinculada ao produto."
           },
           "checkout": {
             "type": "object",
@@ -7049,7 +7106,8 @@
                   "list"
                 ]
               }
-            }
+            },
+            "description": "Configuracoes de checkout do produto."
           },
           "send": {
             "type": "object",
@@ -7095,7 +7153,8 @@
             "required": [
               "active",
               "list"
-            ]
+            ],
+            "description": "Configuracoes de envio ou entrega associadas ao produto."
           },
           "discount": {
             "type": "object",
@@ -7139,7 +7198,8 @@
                 },
                 "default": []
               }
-            }
+            },
+            "description": "Configuracoes de desconto do produto."
           },
           "notification": {
             "type": "object",
@@ -7169,7 +7229,8 @@
                   "email"
                 ]
               }
-            }
+            },
+            "description": "Configuracoes de notificacao do produto."
           }
         }
       },
@@ -7177,13 +7238,16 @@
         "type": "object",
         "properties": {
           "companyId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da empresa dona do produto."
           },
           "active": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Indica se o produto esta ativo."
           },
           "deleted": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Indica exclusao logica do produto."
           },
           "setting": {
             "type": "object",
@@ -7212,7 +7276,8 @@
                   }
                 }
               }
-            }
+            },
+            "description": "Configuracoes gerais do produto."
           },
           "charge": {
             "type": "object",
@@ -7390,7 +7455,8 @@
                 },
                 "default": []
               }
-            }
+            },
+            "description": "Regras de cobranca do produto, como frequencia, tentativas e metodos de pagamento."
           },
           "product": {
             "type": "object",
@@ -7419,7 +7485,8 @@
               "SKU": {
                 "type": "string"
               }
-            }
+            },
+            "description": "Dados comerciais do produto, como title, price e warranty."
           },
           "unsubscription": {
             "type": "object",
@@ -7441,7 +7508,8 @@
                 "type": "integer",
                 "minimum": 0
               }
-            }
+            },
+            "description": "Regra de cancelamento da assinatura vinculada ao produto."
           },
           "checkout": {
             "type": "object",
@@ -7600,7 +7668,8 @@
                   }
                 }
               }
-            }
+            },
+            "description": "Configuracoes de checkout do produto."
           },
           "send": {
             "type": "object",
@@ -7634,7 +7703,8 @@
                   }
                 }
               }
-            }
+            },
+            "description": "Configuracoes de envio ou entrega associadas ao produto."
           },
           "discount": {
             "type": "object",
@@ -7678,7 +7748,8 @@
                 },
                 "default": []
               }
-            }
+            },
+            "description": "Configuracoes de desconto do produto."
           },
           "notification": {
             "type": "object",
@@ -7702,10 +7773,12 @@
                   }
                 }
               }
-            }
+            },
+            "description": "Configuracoes de notificacao do produto."
           },
           "_id": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do produto que sera atualizado."
           }
         }
       },
@@ -7713,13 +7786,16 @@
         "type": "object",
         "properties": {
           "companyId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da empresa da cobranca."
           },
           "clientId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do cliente que recebera a cobranca."
           },
           "productId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do produto vinculado a cobranca."
           },
           "paymentMethodOption": {
             "type": "array",
@@ -7772,21 +7848,27 @@
                 "type"
               ]
             },
-            "default": []
+            "default": [],
+            "description": "Opcoes de pagamento disponiveis para a cobranca."
           },
-          "dueDate": {},
+          "dueDate": {
+            "description": "Data de vencimento da cobranca."
+          },
           "amount": {
             "type": "number",
-            "exclusiveMinimum": 0
+            "exclusiveMinimum": 0,
+            "description": "Valor decimal da cobranca. O backend converte internamente para centavos com Math.round(amount * 100)."
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "description": "Descricao da cobranca."
           },
           "cardAuth": {
             "type": [
               "boolean",
               "null"
-            ]
+            ],
+            "description": "Indica uso de autorizacao de cartao, quando aplicavel."
           }
         },
         "required": [
@@ -7801,16 +7883,20 @@
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da cobranca que sera paga."
           },
           "companyId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da empresa da cobranca."
           },
           "referenceId": {
-            "type": "string"
+            "type": "string",
+            "description": "Referencia externa da cobranca."
           },
           "origin": {
-            "type": "string"
+            "type": "string",
+            "description": "Origem do pagamento, quando informada."
           },
           "paymentMethod": {
             "type": "string",
@@ -7825,15 +7911,18 @@
               "DEBIT_CARD",
               "BOLETO",
               "PIX"
-            ]
+            ],
+            "description": "Meio de pagamento usado para pagar a cobranca."
           },
           "captchaToken": {
-            "type": "string"
+            "type": "string",
+            "description": "Token de captcha usado pelo fluxo de pagamento de cobranca."
           },
           "installments": {
             "type": "integer",
             "exclusiveMinimum": 0,
-            "default": 1
+            "default": 1,
+            "description": "Quantidade de parcelas. Quando omitido, o fluxo usa 1 parcela."
           },
           "paymentProfile": {
             "type": "object",
@@ -7853,13 +7942,15 @@
               "holderName": {
                 "type": "string"
               }
-            }
+            },
+            "description": "Dados de pagamento, quando o meio escolhido exigir."
           },
           "cardAuthId": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "ID de autorizacao de cartao, quando usado no fluxo."
           }
         },
         "required": [
@@ -8092,74 +8183,93 @@
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da transacao."
           },
           "companyId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da empresa vinculada a transacao."
           },
           "clientId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do cliente vinculado, quando houver."
           },
           "productId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do produto vinculado, quando houver."
           },
           "subscriptionId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da assinatura vinculada, quando houver."
           },
           "chargeId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da cobranca vinculada, quando houver."
           },
           "amount": {
-            "type": "number"
+            "type": "number",
+            "description": "Valor da transacao, normalmente com value em centavos e currency BRL."
           },
           "installments": {
-            "type": "number"
+            "type": "number",
+            "description": "Parcelamento da transacao."
           },
           "paymentMethod": {
-            "$ref": "#/components/schemas/PaymentMethod"
+            "$ref": "#/components/schemas/PaymentMethod",
+            "description": "Meio de pagamento usado na transacao."
           },
           "status": {
-            "$ref": "#/components/schemas/TransactionStatus"
+            "$ref": "#/components/schemas/TransactionStatus",
+            "description": "Status atual da transacao."
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "Mensagem principal retornada pelo processamento."
           },
           "message2": {
-            "type": "string"
+            "type": "string",
+            "description": "Mensagem complementar retornada pelo processamento."
           },
           "card": {
             "type": "object",
-            "additionalProperties": true
+            "additionalProperties": true,
+            "description": "Dados de cartao salvos internamente, quando houver."
           },
           "acquirer": {
             "type": "object",
-            "additionalProperties": true
+            "additionalProperties": true,
+            "description": "Dados da adquirente vinculada a transacao."
           },
           "boleto": {
             "type": [
               "object",
               "null"
             ],
-            "additionalProperties": true
+            "additionalProperties": true,
+            "description": "Dados de boleto, quando gerados."
           },
           "qrCode": {
             "type": [
               "object",
               "null"
             ],
-            "additionalProperties": true
+            "additionalProperties": true,
+            "description": "Dados de Pix, quando gerados."
           },
           "metadata": {
             "type": "object",
-            "additionalProperties": true
+            "additionalProperties": true,
+            "description": "Metadados livres vinculados a transacao."
           },
           "createdAt": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Data de criacao da transacao."
           },
           "lastUpdate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Data da ultima atualizacao da transacao."
           }
         }
       },
@@ -8167,52 +8277,66 @@
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do cliente."
           },
           "companyId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da empresa vinculada ao cliente."
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Nome do cliente."
           },
           "doc": {
-            "type": "string"
+            "type": "string",
+            "description": "Documento do cliente."
           },
           "cpf": {
-            "type": "string"
+            "type": "string",
+            "description": "CPF do cliente, quando presente no payload legado."
           },
           "email": {
             "type": "string",
-            "format": "email"
+            "format": "email",
+            "description": "E-mail do cliente."
           },
           "phone": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Telefones do cliente."
           },
           "status": {
-            "$ref": "#/components/schemas/ClientStatus"
+            "$ref": "#/components/schemas/ClientStatus",
+            "description": "Status do cliente."
           },
           "type": {
-            "$ref": "#/components/schemas/ClientType"
+            "$ref": "#/components/schemas/ClientType",
+            "description": "Tipo do cliente."
           },
           "active": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Indica se o cliente esta ativo."
           },
           "deleted": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Indica exclusao logica do cliente, quando preenchido."
           },
           "referenceId": {
-            "type": "string"
+            "type": "string",
+            "description": "Referencia externa da sua aplicacao."
           },
           "createdAt": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Data de criacao do cliente."
           },
           "lastUpdate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Data da ultima atualizacao do cliente."
           }
         }
       },
@@ -8220,50 +8344,64 @@
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da assinatura."
           },
           "companyId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da empresa vinculada a assinatura."
           },
           "clientId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do cliente assinante."
           },
           "productId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do produto vinculado."
           },
           "status": {
-            "$ref": "#/components/schemas/SubscriptionStatus"
+            "$ref": "#/components/schemas/SubscriptionStatus",
+            "description": "Status atual da assinatura."
           },
           "paymentMethod": {
-            "$ref": "#/components/schemas/PaymentMethod"
+            "$ref": "#/components/schemas/PaymentMethod",
+            "description": "Metodos de pagamento disponiveis para a assinatura."
           },
           "installments": {
-            "type": "number"
+            "type": "number",
+            "description": "Quantidade de parcelas configurada."
           },
           "nextCharge": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Proxima data de cobranca, quando disponivel."
           },
           "origin": {
-            "$ref": "#/components/schemas/RequestOrigin"
+            "$ref": "#/components/schemas/RequestOrigin",
+            "description": "Origem da criacao da assinatura."
           },
           "referenceId": {
-            "type": "string"
+            "type": "string",
+            "description": "Referencia externa da sua aplicacao."
           },
           "metadata": {
             "type": "object",
-            "additionalProperties": true
+            "additionalProperties": true,
+            "description": "Metadados livres vinculados a assinatura."
           },
           "active": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Indica se a assinatura esta ativa."
           },
           "createdAt": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Data de criacao da assinatura."
           },
           "lastUpdate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Data da ultima atualizacao da assinatura."
           }
         }
       },
@@ -8271,22 +8409,28 @@
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da cobranca."
           },
           "companyId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da empresa vinculada a cobranca."
           },
           "clientId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do cliente vinculado."
           },
           "productId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do produto vinculado."
           },
           "subscriptionId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da assinatura vinculada, quando houver."
           },
           "amount": {
-            "type": "number"
+            "type": "number",
+            "description": "Valor da cobranca, normalmente com value em centavos e currency BRL."
           },
           "dueDate": {
             "oneOf": [
@@ -8296,37 +8440,46 @@
               {
                 "type": "number"
               }
-            ]
+            ],
+            "description": "Data de vencimento da cobranca."
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "description": "Descricao da cobranca."
           },
           "status": {
-            "$ref": "#/components/schemas/ChargeStatus"
+            "$ref": "#/components/schemas/ChargeStatus",
+            "description": "Status atual da cobranca."
           },
           "paymentMethod": {
-            "$ref": "#/components/schemas/PaymentMethod"
+            "$ref": "#/components/schemas/PaymentMethod",
+            "description": "Metodos de pagamento disponiveis."
           },
           "paymentMethodOption": {
             "type": "array",
             "items": {
               "type": "object",
               "additionalProperties": true
-            }
+            },
+            "description": "Opcoes de pagamento da cobranca."
           },
           "active": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Indica se a cobranca esta ativa."
           },
           "number": {
-            "type": "number"
+            "type": "number",
+            "description": "Numero sequencial da cobranca, quando houver."
           },
           "createdAt": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Data de criacao da cobranca."
           },
           "lastUpdate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Data da ultima atualizacao da cobranca."
           }
         }
       },
@@ -8334,28 +8487,35 @@
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do produto."
           },
           "companyId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da empresa dona do produto."
           },
           "active": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Indica se o produto esta ativo."
           },
           "deleted": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Indica exclusao logica do produto."
           },
           "product": {
             "type": "object",
-            "additionalProperties": true
+            "additionalProperties": true,
+            "description": "Dados comerciais do produto, como title e price."
           },
           "charge": {
             "type": "object",
-            "additionalProperties": true
+            "additionalProperties": true,
+            "description": "Regras de cobranca do produto."
           },
           "setting": {
             "type": "object",
-            "additionalProperties": true
+            "additionalProperties": true,
+            "description": "Configuracoes gerais do produto."
           },
           "unsubscription": {
             "type": "object",
@@ -8367,7 +8527,8 @@
                 "type": "integer",
                 "minimum": 0
               }
-            }
+            },
+            "description": "Regra de cancelamento vinculada ao produto."
           }
         }
       },
@@ -8375,45 +8536,57 @@
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do alerta."
           },
           "companyId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da empresa vinculada ao alerta."
           },
           "referenceId": {
-            "type": "string"
+            "type": "string",
+            "description": "Referencia externa vinculada ao alerta, quando houver."
           },
           "status": {
-            "$ref": "#/components/schemas/AlertStatus"
+            "$ref": "#/components/schemas/AlertStatus",
+            "description": "Status atual do alerta."
           },
           "type": {
-            "$ref": "#/components/schemas/AlertType"
+            "$ref": "#/components/schemas/AlertType",
+            "description": "Tipo do alerta, como ETHOCA ou VISA."
           },
           "transactionId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID da transacao vinculada, quando houver."
           },
           "clientId": {
-            "type": "string"
+            "type": "string",
+            "description": "ID do cliente vinculado, quando houver."
           },
           "payment": {
             "type": "object",
-            "additionalProperties": true
+            "additionalProperties": true,
+            "description": "Dados de pagamento associados ao alerta."
           },
           "info": {
             "type": "object",
-            "additionalProperties": true
+            "additionalProperties": true,
+            "description": "Informacoes operacionais do alerta."
           },
           "values": {
             "type": "object",
-            "additionalProperties": true
+            "additionalProperties": true,
+            "description": "Valores associados ao alerta."
           },
           "createdAt": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Data de criacao do alerta."
           },
           "lastUpdate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Data da ultima atualizacao do alerta."
           }
         }
       },
@@ -8422,11 +8595,13 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "example": true
+            "example": true,
+            "description": "Indica se o cancelamento foi concluido."
           },
           "message": {
             "type": "string",
-            "example": "Assinatura cancelada com sucesso."
+            "example": "Assinatura cancelada com sucesso.",
+            "description": "Mensagem de retorno do cancelamento."
           }
         }
       },
@@ -8519,10 +8694,12 @@
         "type": "object",
         "properties": {
           "subscription": {
-            "$ref": "#/components/schemas/Subscription"
+            "$ref": "#/components/schemas/Subscription",
+            "description": "Assinatura criada pelo endpoint v2."
           },
           "charge": {
-            "$ref": "#/components/schemas/Charge"
+            "$ref": "#/components/schemas/Charge",
+            "description": "Cobranca criada junto com a assinatura v2."
           }
         },
         "description": "Resposta da criacao v2. Retorna assinatura e cobranca criadas, sem tentativa de pagamento imediato."
