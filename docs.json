@@ -29,6 +29,7 @@
         "group": "Guias",
         "pages": [
           "guides/values-and-formats",
+          "guides/clients",
           "guides/transactions",
           "guides/subscriptions",
           "guides/charges"

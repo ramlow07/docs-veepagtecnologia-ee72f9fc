@@ -1,0 +1,124 @@
+---
+title: "Clientes"
+description: "Como cadastrar, consultar e atualizar clientes na API Veepag."
+---
+
+Clientes representam as pessoas que compram, assinam ou recebem cobranças pela Veepag. Um bom cadastro ajuda sua operação a conciliar pagamentos, enviar comunicações e entender melhor cada tentativa de cobrança.
+
+Você pode trabalhar com clientes de duas formas:
+
+| Caminho | Quando usar |
+| --- | --- |
+| Criar o cliente antes | Quando sua aplicação já tem um cadastro próprio e quer usar `clientId` em cobranças ou assinaturas v2. |
+| Enviar `client` inline | Quando você está criando uma transação ou assinatura v1 e quer informar os dados do cliente no mesmo payload. |
+
+## Criar cliente
+
+`POST /v1/client` cria um cliente vinculado a uma empresa.
+
+Campos obrigatórios confirmados:
+
+| Campo | Regra |
+| --- | --- |
+| `companyId` | ID da empresa. |
+| `name` | Nome do cliente. Não aceita números ou caracteres especiais. |
+| `doc` | CPF ou CNPJ válido. |
+
+```bash
+curl --request POST 'https://sandbox.api.veepag.com/v1/client' \
+  --header 'apiKey: keyId.secret' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "companyId": "company_id",
+    "name": "Maria Silva",
+    "doc": "12345678909",
+    "email": "maria.silva@example.com",
+    "phone": ["11999999999"],
+    "referenceId": "cliente-123",
+    "type": "INDIVIDUAL",
+    "address": {
+      "street": "Rua Exemplo",
+      "number": "123",
+      "complement": "Apto 101",
+      "neighborhood": "Centro",
+      "city": "São Paulo",
+      "state": "SP",
+      "country": "BR",
+      "zipcode": "01001000"
+    }
+  }'
+```
+
+<Tip>
+  Use `referenceId` para guardar o identificador do cliente no seu sistema. Isso deixa conciliação e suporte muito mais simples.
+</Tip>
+
+## Consultar clientes
+
+`GET /v1/client` retorna uma lista paginada. Você pode buscar por ID, por informações pessoais ou por período.
+
+```bash
+curl --request GET 'https://sandbox.api.veepag.com/v1/client?personalInfo=maria&page=1&limit=20' \
+  --header 'apiKey: keyId.secret'
+```
+
+Filtros úteis:
+
+| Campo | Uso |
+| --- | --- |
+| `id` | Busca um cliente específico. |
+| `personalInfo` | Busca por dados pessoais, como nome, documento ou e-mail. |
+| `rangeTime.start` e `rangeTime.end` | Filtram por período conforme `sort.property`. |
+| `sort.property` | Aceita `createdAt` ou `lastUpdate`. |
+| `sort.order` | Aceita `asc` ou `desc`. |
+| `page` e `limit` | Paginação. `limit` aceita de 1 a 100. |
+
+## Buscar cliente completo
+
+`GET /v1/client/full` busca o cadastro completo de um cliente pelo ID.
+
+```bash
+curl --request GET 'https://sandbox.api.veepag.com/v1/client/full?id=client_id' \
+  --header 'apiKey: keyId.secret'
+```
+
+Use esse endpoint quando você precisa conferir o cadastro antes de iniciar uma assinatura, cobrança ou análise de suporte.
+
+## Atualizar cliente
+
+`PUT /v1/client` atualiza dados cadastrais do cliente.
+
+```bash
+curl --request PUT 'https://sandbox.api.veepag.com/v1/client' \
+  --header 'apiKey: keyId.secret' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "_id": "client_id",
+    "name": "Maria Silva",
+    "email": "maria.silva@example.com",
+    "phone": ["11988887777"],
+    "note": "Cliente solicitou atualização cadastral"
+  }'
+```
+
+<Warning>
+  O endpoint de atualização não permite alterar `doc`. Se o documento estiver incorreto, fale com o time Veepag para avaliar o melhor caminho.
+</Warning>
+
+## Campos principais
+
+| Campo | Descrição |
+| --- | --- |
+| `name` | Nome do cliente. |
+| `doc` ou `cpf` | Documento do cliente. Em criação direta de cliente, use `doc`. Em alguns fluxos inline, `cpf` também é aceito e normalizado para `doc`. |
+| `email` | E-mail do cliente. |
+| `phone` | Lista de telefones. |
+| `address` | Endereço do cliente. |
+| `device` | Dados de dispositivo, quando o fluxo precisar registrar contexto da compra. |
+| `ipAddress` | IP do cliente, quando disponível. |
+| `referenceId` | Identificador externo da sua aplicação. |
+| `type` | Tipo do cliente, conforme enum aceito pela API. |
+
+<Note>
+  Se você ainda está montando o primeiro fluxo, comece com `name`, `doc`, `email` e `referenceId`. Depois, acrescente endereço, telefone e dispositivo conforme a necessidade da sua operação.
+</Note>
