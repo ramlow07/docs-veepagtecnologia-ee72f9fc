@@ -123,7 +123,8 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
       "discount": null,
       "notification": null,
       "product": {
-        "name": "Assinatura Veepag"
+        "title": "Assinatura Veepag",
+        "price": 99.9
       },
       "send": null,
       "setting": {},
@@ -227,7 +228,7 @@ Quando um evento relevante acontece, a Veepag envia um `POST` para a URL configu
 | Campo | Tipo | Descrição |
 | --- | --- | --- |
 | `_id` | `string` | Identificador da transação. |
-| `acquirer` | `object` | Dados do adquirente: `chargeId`, `id`, `integrationId`, `name`, `authorization` e `tid`. |
+| `acquirer` | `object` | Dados do adquirente. O payload pode conter `id`, `integrationId`, `name`, `tid`, `chargeId`, `authorization`, `orderId` e `paymentId`, conforme o fluxo e a adquirente. |
 | `amount` | `object` | Valor da transação: `currency` e `value`. |
 | `boleto` | `object` ou `null` | Dados de boleto: `barcode`, `dueDate`, `url` e `links`. |
 | `card` | `object` ou `null` | Dados do cartão, quando salvos no payload interno. Esses dados foram omitidos dos exemplos por não serem necessários para integração via webhook. |
