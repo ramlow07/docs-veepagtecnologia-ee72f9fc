@@ -1,0 +1,154 @@
+---
+title: "Tokenização"
+description: "Como cifrar o cartão no browser e enviar o token no lugar dos dados abertos."
+---
+
+O script da Veepag cifra o cartão no navegador do seu cliente. O número, a validade e o CVV não vão em texto aberto para o seu servidor. O que segue para a API é um token, o resultado dessa cifra.
+
+O script não desenha o formulário. Os campos continuam na sua página. Na hora de pagar, você lê esses campos, chama `Veepag.encryptCard` e manda o retorno para o seu backend. Quem chama a API da Veepag é o seu servidor, com a `apiKey`.
+
+## Antes de começar
+
+A Veepag entrega duas coisas para você colocar na página de pagamento:
+
+- A URL do script `veepag.min.js`.
+- A chave pública, em PEM. Ela é a mesma para todas as contas. A chave privada fica na Veepag.
+
+A página precisa abrir em HTTPS. A `apiKey` fica só no seu backend.
+
+## 1. Inclua o script
+
+Coloque a tag na página de pagamento, com a URL que a Veepag passou.
+
+```html
+<script src="URL_DO_SCRIPT"></script>
+```
+
+Depois que o script carrega, `Veepag.encryptCard` fica disponível na página.
+
+## 2. Cifre o cartão
+
+Leia os campos do seu formulário e chame a função. A chamada é assíncrona: use `await`.
+
+`expYear` tem 4 dígitos (`2029`). `expMonth` pode ser `12` ou `3`. O script monta a validade como `12/2029` ou `03/2029`. Espaços no número do cartão são removidos.
+
+`keyId` é opcional. Se você não enviar, o script usa `v1`.
+
+```html
+<script>
+  async function capturarCartao() {
+    const result = await Veepag.encryptCard({
+      publicKey: `-----BEGIN PUBLIC KEY-----
+COLE_A_CHAVE_PUBLICA_AQUI
+-----END PUBLIC KEY-----`,
+      holder: document.getElementById("cardHolder").value,
+      number: document.getElementById("cardNumber").value,
+      expMonth: document.getElementById("cardMonth").value,
+      expYear: document.getElementById("cardYear").value,
+      securityCode: document.getElementById("cardCvv").value,
+    });
+
+    if (result.hasErrors) {
+      console.error(result.errors);
+      return;
+    }
+
+    await enviarParaOBackend(result.encryptedCard);
+  }
+</script>
+```
+
+`result.encryptedCard` é o token. Ele tem cinco campos: `keyId`, `encryptedKey`, `iv`, `ciphertext` e `authTag`. Os quatro últimos vêm em base64. Envie esse objeto inteiro para o seu backend.
+
+<Warning>
+  Não coloque a `apiKey` nem a chave privada nessa página. A chave pública pode ficar no frontend. A privada não sai da Veepag.
+</Warning>
+
+## 3. Trate os erros
+
+Se algum campo estiver inválido, o script não cifra. `hasErrors` vem `true`, `encryptedCard` vem `null`, e `errors` lista o que falhou. Mais de um erro pode voltar na mesma resposta.
+
+| Código | Quando acontece |
+| --- | --- |
+| `INVALID_HOLDER` | Nome do portador vazio. |
+| `INVALID_NUMBER` | Número que, sem espaços, não tem de 13 a 19 dígitos. |
+| `INVALID_EXPIRATION_MONTH` | Mês que não é um inteiro de 1 a 12. |
+| `INVALID_EXPIRATION_YEAR` | Ano que não tem exatamente 4 dígitos. `29` não vale; use `2029`. |
+| `INVALID_SECURITY_CODE` | CVV que não tem 3 ou 4 dígitos. |
+| `INVALID_PUBLIC_KEY` | Chave ausente ou que não é um PEM de chave pública. |
+
+Mostre a mensagem para o cliente e peça para corrigir o campo. Não chame a API da Veepag nesse caso.
+
+## 4. Envie o token pelo seu backend
+
+O seu servidor recebe `encryptedCard` e coloca esse objeto no campo `token` da cobrança. Não envie `paymentProfile` junto. A API aceita um ou outro.
+
+No cartão, `token` vale nestes endpoints:
+
+- `POST /v1/transaction`
+- `POST /v1/subscription`
+- `POST /v1/charge/pay` (esse caminho usa reCAPTCHA; veja [Cobranças](/guides/charges))
+
+Exemplo de transação no sandbox. O valor de `amount` continua em centavos.
+
+```bash
+curl --request POST 'https://sandbox.api.veepag.com/v1/transaction' \
+  --header 'apiKey: keyId.secret' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "companyId": "company_id",
+    "amount": 9900,
+    "installments": 1,
+    "capture": true,
+    "token": {
+      "keyId": "v1",
+      "encryptedKey": "encrypted_key",
+      "iv": "iv",
+      "ciphertext": "ciphertext",
+      "authTag": "auth_tag"
+    },
+    "client": {
+      "name": "Maria Silva",
+      "doc": "12345678909",
+      "email": "maria.silva@example.com"
+    }
+  }'
+```
+
+Na assinatura v1, o corpo muda pouco: no lugar de `paymentProfile`, vai o mesmo `token`. `product.id` e `paymentMethod` continuam obrigatórios.
+
+```bash
+curl --request POST 'https://sandbox.api.veepag.com/v1/subscription' \
+  --header 'apiKey: keyId.secret' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "companyId": "company_id",
+    "product": { "id": "product_id" },
+    "paymentMethod": "CREDIT_CARD",
+    "installments": 1,
+    "token": {
+      "keyId": "v1",
+      "encryptedKey": "encrypted_key",
+      "iv": "iv",
+      "ciphertext": "ciphertext",
+      "authTag": "auth_tag"
+    },
+    "client": {
+      "name": "Maria Silva",
+      "doc": "12345678909",
+      "email": "maria.silva@example.com"
+    }
+  }'
+```
+
+<Note>
+  O token vale por 10 minutos e só pode ser usado uma vez. Se a cobrança falhar e você precisar tentar de novo, cifre o cartão outra vez na página. Reenviar o mesmo objeto é recusado.
+</Note>
+
+<Tip>
+  Quem ainda envia `paymentProfile` com o cartão em aberto continua funcionando. O token é o caminho para o cartão não passar pelo seu servidor.
+</Tip>
+
+<Check>
+  Se a API aceitou o `token` e devolveu a transação ou a assinatura, a cifra e o envio fecharam. O cartão foi aberto só na Veepag.
+</Check>
