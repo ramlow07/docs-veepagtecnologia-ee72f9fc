@@ -9,6 +9,10 @@ Transações representam pagamentos avulsos processados pela Veepag. Use este fl
 
 `POST /v1/transaction` cria uma transação avulsa. Para pagamento com cartão, envie os dados em `paymentProfile`: número, validade, nome do portador e, quando necessário, CVV.
 
+<Note>
+  Para o cartão não passar pelo seu servidor, cifre os dados no browser e envie `token` no lugar de `paymentProfile`. O passo a passo está em [Tokenização](/guides/tokenization).
+</Note>
+
 No exemplo abaixo, criamos uma transação no sandbox com um cliente informado no próprio payload.
 
 ```bash
