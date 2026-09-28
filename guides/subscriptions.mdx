@@ -18,7 +18,7 @@ Campos obrigatórios confirmados:
 | `companyId` | String obrigatória. |
 | `product.id` | ID do produto. |
 | `paymentMethod` | Enum `CREDIT_CARD`, `DEBIT_CARD`, `BOLETO` ou `PIX`. |
-| `paymentProfile` | Obrigatório para `CREDIT_CARD`: `holderName`, `cardNumber`, `cardExpiration`. |
+| `paymentProfile` ou `token` | Para `CREDIT_CARD`, envie um dos dois. `paymentProfile` leva o cartão em aberto. `token` é o resultado do script de tokenização. Veja [Tokenização](/guides/tokenization). |
 | `client.name` | Obrigatório quando `client` é enviado. |
 | `client.doc` ou `client.cpf` | CPF/CNPJ válido. |
 
