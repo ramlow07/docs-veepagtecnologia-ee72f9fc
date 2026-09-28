@@ -39,6 +39,10 @@
         ]
       },
       {
+        "group": "Tokenização",
+        "pages": ["guides/tokenization"]
+      },
+      {
         "group": "API Reference",
         "openapi": "api-reference/openapi.json"
       }
