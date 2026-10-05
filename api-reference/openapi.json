@@ -5827,16 +5827,16 @@
                 "default": [],
                 "items": {
                   "type": "object",
-                  "description": "Regra de divisão para uma empresa recebedora com seller Zoop configurado.",
+                  "description": "Regra de divisão para uma empresa recebedora habilitada e com integração de pagamento válida.",
                   "properties": {
                     "companyId": {
                       "type": "string",
-                      "description": "ID da empresa recebedora. A empresa precisa ter um seller Zoop configurado."
+                      "description": "ID da empresa recebedora. Ela precisa estar habilitada como recebedora e ter uma integração de pagamento válida."
                     },
                     "amount": {
                       "type": "number",
                       "minimum": 0,
-                      "description": "Valor fixo em reais. A Veepag converte o valor para centavos ao enviar a regra à Zoop."
+                      "description": "Valor fixo em reais. A Veepag converte o valor para centavos ao encaminhar a regra ao processador."
                     },
                     "percentage": {
                       "type": "integer",
@@ -5846,12 +5846,12 @@
                     "chargeProcessingFee": {
                       "type": "boolean",
                       "default": true,
-                      "description": "Mapeado para charge_processing_fee da Zoop. true calcula o split sobre o valor líquido da taxa; false usa o valor bruto."
+                      "description": "true (padrão Veepag) calcula o split sobre o valor líquido da taxa de processamento; false usa o valor bruto. Em regras percentuais, a taxa é dividida proporcionalmente entre os participantes."
                     },
                     "chargeRecipientProcessingFee": {
                       "type": "boolean",
                       "default": false,
-                      "description": "Mapeado para charge_recipient_processing_fee da Zoop. true atribui a taxa inteira ao recebedor desta regra; só um participante pode usar esta opção."
+                      "description": "true atribui a taxa inteira da transação ao recebedor desta regra; só um participante pode usar esta opção. Nesse modo, envie chargeProcessingFee: false."
                     }
                   },
                   "required": [
