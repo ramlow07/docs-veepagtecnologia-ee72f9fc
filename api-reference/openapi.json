@@ -358,6 +358,17 @@
                 "amount": 9900,
                 "installments": 1,
                 "capture": true,
+                "split": {
+                  "active": true,
+                  "rules": [
+                    {
+                      "companyId": "recipient_company_id",
+                      "percentage": 20,
+                      "chargeProcessingFee": true,
+                      "chargeRecipientProcessingFee": false
+                    }
+                  ]
+                },
                 "paymentProfile": {
                   "cardNumber": "4111111111111111",
                   "cardExpiration": "10/2026",
@@ -5802,6 +5813,68 @@
             "type": "boolean",
             "default": true,
             "description": "Indica se a transacao deve ser capturada imediatamente. Quando omitido, o fluxo usa true."
+          },
+          "split": {
+            "type": "object",
+            "description": "Regras de split específicas desta transação. Quando active for true, têm prioridade sobre o split ativo do produto ou da empresa.",
+            "properties": {
+              "active": {
+                "type": "boolean",
+                "description": "Ativa as regras de split desta transação."
+              },
+              "rules": {
+                "type": "array",
+                "default": [],
+                "items": {
+                  "type": "object",
+                  "description": "Regra de divisão para uma empresa recebedora com seller Zoop configurado.",
+                  "properties": {
+                    "companyId": {
+                      "type": "string",
+                      "description": "ID da empresa recebedora. A empresa precisa ter um seller Zoop configurado."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "minimum": 0,
+                      "description": "Valor fixo em reais. A Veepag converte o valor para centavos ao enviar a regra à Zoop."
+                    },
+                    "percentage": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "description": "Percentual inteiro do split."
+                    },
+                    "chargeProcessingFee": {
+                      "type": "boolean",
+                      "default": true,
+                      "description": "Mapeado para charge_processing_fee da Zoop. true calcula o split sobre o valor líquido da taxa; false usa o valor bruto."
+                    },
+                    "chargeRecipientProcessingFee": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Mapeado para charge_recipient_processing_fee da Zoop. true atribui a taxa inteira ao recebedor desta regra; só um participante pode usar esta opção."
+                    }
+                  },
+                  "required": [
+                    "companyId"
+                  ],
+                  "anyOf": [
+                    {
+                      "required": [
+                        "amount"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "percentage"
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            "required": [
+              "active"
+            ]
           }
         },
         "required": [

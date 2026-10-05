@@ -42,6 +42,55 @@ curl --request POST 'https://sandbox.api.veepag.com/v1/transaction' \
   Em transações, envie `amount` em centavos. Por exemplo, `9900` representa R$ 99,00.
 </Note>
 
+### Configurar split na transação
+
+Envie `split` no corpo de `POST /v1/transaction` para definir a divisão desta venda. Quando `split.active` for `true`, estas regras têm prioridade sobre o split configurado no produto ou na empresa. Se você omitir `split` ou enviar `active: false`, o fluxo pode usar o split ativo do produto ou, na ausência dele, o da empresa.
+
+Cada regra aponta para uma empresa recebedora e define a parcela por valor ou percentual. A empresa informada em `companyId` precisa estar cadastrada e ter um seller Zoop configurado.
+
+```json
+{
+  "companyId": "company_id",
+  "amount": 9900,
+  "installments": 1,
+  "capture": true,
+  "paymentProfile": {
+    "cardNumber": "4111111111111111",
+    "cardExpiration": "10/2026",
+    "holderName": "MARIA SILVA",
+    "cardCvv": "123"
+  },
+  "split": {
+    "active": true,
+    "rules": [
+      {
+        "companyId": "recipient_company_id_1",
+        "percentage": 70
+      },
+      {
+        "companyId": "recipient_company_id_2",
+        "percentage": 30
+      }
+    ]
+  }
+}
+```
+
+| Campo | Regra |
+| --- | --- |
+| `split.active` | Ativa as regras enviadas para esta transação. |
+| `split.rules[].companyId` | ID da empresa que receberá esta parte do split. Ela precisa ter seller Zoop configurado. |
+| `split.rules[].amount` | Valor fixo da regra em reais. O backend converte para centavos ao enviar para a Zoop. Exemplo: `12.5` representa R$ 12,50. |
+| `split.rules[].percentage` | Percentual inteiro da regra. Envie `20` para representar 20%. |
+| `split.rules[].chargeProcessingFee` | Mapeado para `charge_processing_fee` da Zoop. `true` (padrão Veepag) calcula o split sobre o valor líquido da taxa de processamento; `false` usa o valor bruto. Com split percentual, a Zoop usa esse campo para definir a divisão proporcional da taxa entre os participantes. |
+| `split.rules[].chargeRecipientProcessingFee` | Mapeado para `charge_recipient_processing_fee`. `true` atribui a taxa inteira da transação ao recebedor desta regra; só um participante pode usar essa opção. Para esse modo, a Zoop orienta enviar `chargeProcessingFee: false`. |
+
+Cada regra precisa informar `amount` ou `percentage`. Prefira informar apenas um dos dois; se ambos forem enviados, a Veepag usa `amount`. O padrão de `chargeProcessingFee` é `true` e o de `chargeRecipientProcessingFee` é `false`.
+
+<Note>
+  Há duas formas diferentes de tratar a taxa: `chargeProcessingFee` define o cálculo e a divisão proporcional associada à regra; `chargeRecipientProcessingFee` concentra a taxa inteira em um recebedor específico. A documentação da Zoop descreve a divisão proporcional da taxa para regras percentuais e o repasse integral ao recebedor com `charge_processing_fee: false` e `charge_recipient_processing_fee: true`. Confira a regra comercial acordada para a sua conta antes de escolher os valores.
+</Note>
+
 ## Consultar transações
 
 `GET /v1/transaction` retorna um objeto paginado. Ele é indicado para telas administrativas, conciliação e buscas operacionais.
